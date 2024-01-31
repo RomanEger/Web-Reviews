@@ -2,12 +2,12 @@
 
 namespace Web_Reviews.Controllers;
 
-public class HomeController
+public class HomeController : Controller
 {
     [HttpGet]
     [Route("")] [Route("[action]")]
-    public string Index()
+    public IActionResult Index()
     {
-        return "Hello";
+        return View();
     }
 }
