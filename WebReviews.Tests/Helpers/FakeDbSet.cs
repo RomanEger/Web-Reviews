@@ -12,7 +12,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebReviews.Tests.Helpers
 {
-    public class FakeDbSet<T> : DbSet<T>, IDbSet<T>,IEnumerable<T>, IQueryable<T>, IDbAsyncEnumerable<T> where T : class
+    public class FakeDbSet<T> : DbSet<T>, IDbSet<T>, IEnumerable<T>, IQueryable<T>, IDbAsyncEnumerable<T> where T : class
     {
         private ObservableCollection<T> _data;
         IQueryable<T> _query;
