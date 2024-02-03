@@ -22,4 +22,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\API\Repository\Repository.csproj" />
+    <ProjectReference Include="..\..\API\Entities\Entities.csproj" />
+    <ProjectReference Include="..\..\API\WebReviews.API\WebReviews.API.csproj" />
+  </ItemGroup>
+
 </Project>
