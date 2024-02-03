@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,15 @@ namespace Repository
     public class RepositoryManager : IRepositoryManager
     {
         private readonly WebReviewsContext _webReviewsContext;
+        private readonly Lazy<IGenericRepository<Videostatus>> _videoStatusesRepository;
 
         public RepositoryManager(WebReviewsContext webReviewsContext)
         {
             _webReviewsContext = webReviewsContext;
+            _videoStatusesRepository = new Lazy<IGenericRepository<Videostatus>>(() => new GenericRepository<Videostatus>(webReviewsContext));
         }
+
+        public IGenericRepository<Videostatus> VideoStatuses => _videoStatusesRepository.Value;
 
         public async Task SaveAsync() =>        
             await _webReviewsContext.SaveChangesAsync();

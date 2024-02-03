@@ -14,6 +14,7 @@
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="MockQueryable.Moq" Version="7.0.0" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
@@ -27,7 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Systems\" />
+    <ProjectReference Include="..\API\Entities\Entities.csproj" />
+    <ProjectReference Include="..\API\Repository\Repository.csproj" />
   </ItemGroup>
 
 </Project>
