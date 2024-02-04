@@ -23,5 +23,12 @@ namespace Repository
 
         public async Task SaveAsync() =>        
             await _webReviewsContext.SaveChangesAsync();
+
+        public IGenericRepository<T> Set<T>() where T : class
+        {
+            //if (typeof(T).IsAssignableFrom(typeof(Videostatus)))
+            //    return (IGenericRepository<T>)VideoStatuses;
+            return (IGenericRepository<T>)VideoStatuses;
+        }
     }
 }

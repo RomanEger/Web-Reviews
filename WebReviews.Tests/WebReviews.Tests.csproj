@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\API\Entities\Entities.csproj" />
     <ProjectReference Include="..\API\Repository\Repository.csproj" />
+    <ProjectReference Include="..\API\Service\Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>

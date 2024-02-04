@@ -26,6 +26,6 @@ namespace WebReviews.API.Extensions
                     .AllowAnyMethod()
                     .AllowAnyHeader();
                 });
-            });
+            });      
     }
 }

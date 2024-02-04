@@ -58,17 +58,17 @@ namespace WebReviews.Tests.Systems.Repositories
             var fixture = new GenericFixture();
 
             var deleted = false;
-            var listOfVideoStatus = fixture.GetRandomData(1).BuildMock().BuildMockDbSet();
+            var VideoStatusEntity = fixture.GetRandomData(1).BuildMock().BuildMockDbSet();
 
             var mockContext = new Mock<WebReviewsContext>();
-            mockContext.Setup(x => x.Set<Videostatus>().Remove(listOfVideoStatus.Object.First())).Callback(() =>
+            mockContext.Setup(x => x.Set<Videostatus>().Remove(VideoStatusEntity.Object.First())).Callback(() =>
             {
                 deleted = true;
             });
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
 
-            repositoryManager.VideoStatuses.DeleteEntity(listOfVideoStatus.Object.First());
+            repositoryManager.VideoStatuses.DeleteEntity(VideoStatusEntity.Object.First());
 
             deleted.Should().BeTrue();
         }
@@ -79,17 +79,17 @@ namespace WebReviews.Tests.Systems.Repositories
             var fixture = new GenericFixture();
 
             var created = false;
-            var listOfVideoStatus = fixture.GetRandomData(1).BuildMock().BuildMockDbSet();
+            var VideoStatusEntity = fixture.GetRandomData(1).BuildMock().BuildMockDbSet();
 
             var mockContext = new Mock<WebReviewsContext>();
-            mockContext.Setup(x => x.Set<Videostatus>().Add(listOfVideoStatus.Object.First())).Callback(() =>
+            mockContext.Setup(x => x.Set<Videostatus>().Add(VideoStatusEntity.Object.First())).Callback(() =>
             {
                 created = true;
             });
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
 
-            repositoryManager.VideoStatuses.CreateEntity(listOfVideoStatus.Object.First());
+            repositoryManager.VideoStatuses.CreateEntity(VideoStatusEntity.Object.First());
 
             created.Should().BeTrue();
         }
