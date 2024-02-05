@@ -32,9 +32,8 @@ namespace Service
 
         public async Task<ReferenceDTO> UpdateVideoStatus(Guid videoStatusId, ReferenceForManipulationDTO manipulationDTO, bool trackChanges)
         {
-            var videoStatus = await UpdateAsync<ReferenceForManipulationDTO>(videoStatusId, manipulationDTO, trackChanges);
-            var videoStatusToReturn = _mapper.Map<ReferenceDTO>(videoStatus);
-            return videoStatusToReturn; 
+            var videoStatus = await UpdateAsync<ReferenceForManipulationDTO, ReferenceDTO>(videoStatusId, manipulationDTO, trackChanges);
+            return videoStatus; 
         }
     }
 }

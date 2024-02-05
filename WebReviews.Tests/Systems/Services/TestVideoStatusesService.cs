@@ -147,6 +147,7 @@ namespace WebReviews.Tests.Systems.Services
 
             entitiy.Should().NotBeNull();
             entitiy.title.Should().BeEquivalentTo(referenceForManipulation.title);
+            entitiy.Should().BeOfType(typeof(ReferenceDTO));
         }
 
         [Fact]

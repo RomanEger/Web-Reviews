@@ -69,7 +69,7 @@ namespace Service
             return entityToReturn;
         }
 
-        public async Task<T> UpdateAsync<Tentity>(Guid entityId, Tentity entityForManipulation, bool trackChanges)
+        public async Task<TentityToReturn> UpdateAsync<TentityToChange, TentityToReturn>(Guid entityId, TentityToChange entityForManipulation, bool trackChanges)
         {
             var entity = await _repositoryManager
                 .Set<T>()
@@ -80,7 +80,9 @@ namespace Service
 
             _mapper.Map(entityForManipulation, entity);
             await _repositoryManager.SaveAsync();
-            return entity;
+
+            var entityToReturn = _mapper.Map<TentityToReturn>(entity);
+            return entityToReturn;
         }
     }
 }

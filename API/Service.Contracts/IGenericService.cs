@@ -12,7 +12,7 @@ namespace Service.Contracts
 
         Task<Tentity> GetByIdAsync<Tentity>(Guid entityId, bool trackChanges);
 
-        Task<T> UpdateAsync<Tentity>(Guid entityId,Tentity entityForManipulation, bool trackChanges);
+        Task<TentityToReturn> UpdateAsync<TentityToChange, TentityToReturn>(Guid entityId, TentityToChange entityForManipulation, bool trackChanges);
         Task DeleteAsync(Guid entityId, bool trackChanges);
         Task<T> CreateAsync<Tentity>(Tentity entity);   
     }
