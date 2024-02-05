@@ -117,7 +117,7 @@ namespace WebReviews.Tests.Systems.Services
         }
 
         [Fact]
-        public async Task Get1_OnSuccess_Returned_List_Of_VideoStatuses()
+        public async Task Get_OnSuccess_Returned_Updated_VideoStatus_WithTitle_Updated()
         {
             var fixture = new GenericFixture();
 
@@ -147,6 +147,41 @@ namespace WebReviews.Tests.Systems.Services
 
             entitiy.Should().NotBeNull();
             entitiy.title.Should().BeEquivalentTo(referenceForManipulation.title);
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_Deleted_VideoStatus_ById()
+        {
+            var fixture = new GenericFixture();
+
+            var deleted = false;
+            var videoStatusEntities = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var guid = new Guid("2403cf03-6d26-42db-81d2-78064a44f43d");
+
+
+            var mockAutoMapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfiles());
+            });
+
+            var autoMapper = mockAutoMapper.CreateMapper();
+
+            var mockContext = new Mock<WebReviewsContext>();
+            mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
+            mockContext.Setup(x => x.Set<Videostatus>().Remove(It.IsAny<Videostatus>())).Callback(() =>
+            {
+                deleted = true;
+            });
+
+            var repositoryManager = new RepositoryManager(mockContext.Object);
+
+
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+
+            await serviceManager.VideoStatuses.DeleteVideoStatusAsync(guid, trackChanges:true);
+
+            deleted.Should().BeTrue();
+            mockContext.Verify(x => x.Set<Videostatus>().Remove(It.IsAny<Videostatus>()), Times.Once());
         }
     }
 }
