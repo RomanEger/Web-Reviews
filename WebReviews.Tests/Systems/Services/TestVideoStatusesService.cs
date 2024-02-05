@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Entities.Exceptions;
 using Entities.Models;
 using FluentAssertions;
 using MockQueryable.Moq;
@@ -183,6 +184,69 @@ namespace WebReviews.Tests.Systems.Services
 
             deleted.Should().BeTrue();
             mockContext.Verify(x => x.Set<Videostatus>().Remove(It.IsAny<Videostatus>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task Get_Failed_Update_With_Incorrect_Id_Returned_NotFoundException()
+        {
+            var fixture = new GenericFixture();
+
+            var videoStatusEntities = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var guid = new Guid("2433cf03-6d26-42db-81d2-78064a44f43d");
+            var referenceForManipulation = new ReferenceForManipulationDTO { title = "Updated" };
+
+
+            var mockAutoMapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfiles());
+            });
+
+            var autoMapper = mockAutoMapper.CreateMapper();
+
+
+            var mockContext = new Mock<WebReviewsContext>();
+            mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
+
+            var repositoryManager = new RepositoryManager(mockContext.Object);
+
+
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+
+            //var entitiy = await serviceManager.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true);
+
+            await serviceManager.Invoking(async c => await c.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true))
+                .Should().ThrowAsync<NotFoundException>();
+        }
+
+        [Fact]
+        public async Task Get_Failed_With_GetById_Incorrect_Id_Returned_NotFoundException()
+        {
+            var fixture = new GenericFixture();
+
+            var videoStatusEntities = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var guid = new Guid("2433cf03-6d26-42db-81d2-78064a44f43d");
+
+
+            var mockAutoMapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfiles());
+            });
+
+            var autoMapper = mockAutoMapper.CreateMapper();
+
+
+            var mockContext = new Mock<WebReviewsContext>();
+            mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
+
+            var repositoryManager = new RepositoryManager(mockContext.Object);
+
+
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+
+            //var entitiy = await serviceManager.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true);
+
+            await serviceManager.Invoking(async c => await c.VideoStatuses.GetVideoStatusByIdAsync(guid, trackChanges: true))
+                .Should().ThrowAsync<NotFoundException>();
         }
     }
 }
