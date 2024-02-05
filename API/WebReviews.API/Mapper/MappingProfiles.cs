@@ -8,7 +8,8 @@ namespace WebReviews.API.Mapper
     {
         public MappingProfiles()
         {
-            CreateMap<Videostatus, ReferenceDTO>();
+            CreateMap<Videostatus, ReferenceDTO>()
+                .ForMember("id", x=> x.MapFrom(a => a.VideoStatusId));
             CreateMap<ReferenceForManipulationDTO, Videostatus>()
                 .ReverseMap();
         }

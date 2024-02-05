@@ -8,12 +8,12 @@ namespace Service.Contracts
 {
     public interface IGenericService<T> where T : class
     {
-        Task<IEnumerable<Tentity>> GetAll<Tentity>(bool trackChanges);
+        Task<IEnumerable<Tentity>> GetAllAsync<Tentity>(bool trackChanges);
 
-        Task<Tentity> GetById<Tentity>(Guid entityId, bool trackChanges);
+        Task<Tentity> GetByIdAsync<Tentity>(Guid entityId, bool trackChanges);
 
-        Task Update<Tentity>(Guid entityId,Tentity entity, bool trackChanges);
-        Task Delete<Tentity>(Guid entityId, bool trackChanges);
-        Task<T> Create<Tentity>(Tentity entity);   
+        Task<T> UpdateAsync<Tentity>(Guid entityId,Tentity entityForManipulation, bool trackChanges);
+        Task DeleteAsync(Guid entityId, bool trackChanges);
+        Task<T> CreateAsync<Tentity>(Tentity entity);   
     }
 }
