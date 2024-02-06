@@ -9,6 +9,7 @@ builder.Services.ConfigureCors();
 builder.Services.ConfigureDataBase();
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -24,6 +25,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.ConfigureExceptionHandler();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

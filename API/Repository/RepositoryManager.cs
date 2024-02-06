@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Entities.Exceptions;
 using Entities.Models;
 using System;
 using System.Collections.Generic;
@@ -23,5 +24,21 @@ namespace Repository
 
         public async Task SaveAsync() =>        
             await _webReviewsContext.SaveChangesAsync();
+
+        public IGenericRepository<T> Set<T>() where T : class
+        {
+            //if (typeof(T).IsAssignableFrom(typeof(Videostatus)))
+            //   return (IGenericRepository<T>)VideoStatuses;
+
+            //var type = typeof(T).GetType();
+            var genericRepository = true switch
+            {
+                true when typeof(T).IsAssignableFrom(typeof(Videostatus)) => (IGenericRepository<T>)VideoStatuses,
+                _ => throw new NotFoundException("Type are incorrect")
+            };
+
+            return genericRepository;
+            //return (IGenericRepository<T>)VideoStatuses;
+        }
     }
 }
