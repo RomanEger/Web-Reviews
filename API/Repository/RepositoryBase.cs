@@ -34,6 +34,7 @@ namespace Repository
             ? webReviewsContext.Set<T>().Where(expression)
             : webReviewsContext.Set<T>().Where(expression).AsNoTracking();
 
+
         public void Update(T entity) =>
             webReviewsContext.Set<T>().Update(entity);
     }
