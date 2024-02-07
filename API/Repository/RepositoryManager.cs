@@ -13,15 +13,18 @@ namespace Repository
     {
         private readonly WebReviewsContext _webReviewsContext;
         private readonly Lazy<IGenericRepository<Videostatus>> _videoStatusesRepository;
+        private readonly Lazy<IUserRepository> _userRepository;
 
         public RepositoryManager(WebReviewsContext webReviewsContext)
         {
             _webReviewsContext = webReviewsContext;
             _videoStatusesRepository = new Lazy<IGenericRepository<Videostatus>>(() => new GenericRepository<Videostatus>(webReviewsContext));
+            _userRepository = new Lazy<IUserRepository>(() => new UserRepository(webReviewsContext));
         }
 
         public IGenericRepository<Videostatus> VideoStatuses => _videoStatusesRepository.Value;
 
+        public IUserRepository User => _userRepository.Value;
         public async Task SaveAsync() =>        
             await _webReviewsContext.SaveChangesAsync();
 
