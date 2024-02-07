@@ -11,5 +11,6 @@ namespace Contracts
     {
         IGenericRepository<Videostatus> VideoStatuses { get; }
         Task SaveAsync();
+        IGenericRepository<T> Set<T>() where T : class;
     }
 }

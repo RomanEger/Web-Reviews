@@ -8,8 +8,8 @@ namespace WebReviews.API.Extensions
 {
     public static class ServiceExtensions
     {
-        public static void ConfigureDataBase(this IServiceCollection services) =>
-            services.AddDbContext<WebReviewsContext>(opt => opt.UseNpgsql("DefaultConnection"));
+        public static void ConfigureDataBase(this IServiceCollection services, IConfiguration configuration) =>
+            services.AddDbContext<WebReviewsContext>(opt => opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         public static void ConfigureRepositoryManager(this IServiceCollection services) =>
             services.AddScoped<IRepositoryManager, RepositoryManager>();
