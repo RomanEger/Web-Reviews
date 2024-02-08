@@ -10,7 +10,7 @@ namespace Service.Contracts
 {
     public interface IVideoStatusesService
     {
-        Task<Videostatus> CreateVideoStatusAsync(ReferenceForManipulationDTO manipulationDTO);
+        Task<ReferenceDTO> CreateVideoStatusAsync(ReferenceForManipulationDTO manipulationDTO);
         Task DeleteVideoStatusAsync(Guid videoStatusId, bool trackChanges);
         Task<IEnumerable<ReferenceDTO>> GetVideoStatusesAsync(bool trackChanges);
         Task<ReferenceDTO> GetVideoStatusByIdAsync(Guid videoStatusId,bool trackChanges);

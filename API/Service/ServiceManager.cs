@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contracts;
 using Repository;
 using Service.Contracts;
 using System;
@@ -13,7 +14,7 @@ namespace Service
     {
         private readonly Lazy<IVideoStatusesService> _videoStatusesService;
 
-        public ServiceManager(RepositoryManager repositoryManager, IMapper mapper)
+        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper)
         {
             _videoStatusesService = new Lazy<IVideoStatusesService>(() => new VideoStatusesService(repositoryManager, mapper));
         }
