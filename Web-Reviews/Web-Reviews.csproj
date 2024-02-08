@@ -18,4 +18,8 @@
     <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Home\Index.cshtml" />
+  </ItemGroup>
+
 </Project>
