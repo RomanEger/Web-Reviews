@@ -4,6 +4,7 @@ using Entities.Exceptions;
 using Entities.Models;
 using Repository;
 using Service.Contracts;
+using Service.Helpers;
 using Shared.DataTransferObjects;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,10 @@ namespace Service
     public class VideoStatusesService : GenericService<Videostatus>, IVideoStatusesService
     {
         private readonly IGenericService<Videostatus>.CheckEntityAndGetIfItExist checkVideoStatusAndGet;
-        public VideoStatusesService(IRepositoryManager repositoryManager, IMapper mapper)
+        public VideoStatusesService(IRepositoryManager repositoryManager, IMapper mapper, EntityChecker entityChecker)
             : base(repositoryManager, mapper)
         {
-            checkVideoStatusAndGet = CheckVideoStatusAndGetIfItExist;
+            checkVideoStatusAndGet = entityChecker.CheckVideoStatusAndGetIfItExist;
         }
 
         public async Task<ReferenceDTO> CreateVideoStatusAsync(ReferenceForManipulationDTO manipulationDTO) =>
@@ -37,16 +38,5 @@ namespace Service
         public async Task<ReferenceDTO> UpdateVideoStatus(Guid videoStatusId, ReferenceForManipulationDTO manipulationDTO, bool trackChanges) =>
             await UpdateAsync<ReferenceForManipulationDTO, ReferenceDTO>(videoStatusId, manipulationDTO, trackChanges, checkVideoStatusAndGet);
 
-        private async Task<Videostatus> CheckVideoStatusAndGetIfItExist(Guid entityId, bool trackChanges)
-        {
-            var entity = await _repositoryManager
-                .Set<Videostatus>()
-                .GetGyConditionAsync(x => x.VideoStatusId == entityId, trackChanges);
-
-            if (entity is null)
-                throw new NotFoundException($"Entity {typeof(Videostatus).Name} with id {entityId} not found");
-
-            return entity;
-        }
     }
 }

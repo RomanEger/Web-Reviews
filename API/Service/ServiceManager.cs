@@ -2,6 +2,7 @@
 using Contracts;
 using Repository;
 using Service.Contracts;
+using Service.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,10 @@ namespace Service
         private readonly Lazy<IVideoStatusesService> _videoStatusesService;
         private readonly Lazy<IUserService> _userService;
 
-        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper)
+        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, EntityChecker entityChecker)
         {
-            _videoStatusesService = new Lazy<IVideoStatusesService>(() => new VideoStatusesService(repositoryManager, mapper));
-            _userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper));
+            _videoStatusesService = new Lazy<IVideoStatusesService>(() => new VideoStatusesService(repositoryManager, mapper, entityChecker));
+            _userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, entityChecker));
         }
 
         public IVideoStatusesService VideoStatuses => _videoStatusesService.Value;

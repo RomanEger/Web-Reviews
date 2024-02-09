@@ -17,10 +17,12 @@ namespace Service
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
-        public UserService(IRepositoryManager repositoryManager, IMapper mapper)
+        private readonly EntityChecker _entityChecker;
+        public UserService(IRepositoryManager repositoryManager, IMapper mapper, EntityChecker entityChecker)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
+            _entityChecker = entityChecker;
         }
 
         public async Task<UserDTO> CreateUserAsync(UserForRegistrationDTO userForRegistration)
@@ -29,7 +31,8 @@ namespace Service
             if (user is not null)
                 throw new BadRequestException($"User with email {user.Email} already exist");
 
-            await GetUserByNicknameAndCheck(userForRegistration.Nickname, trackChanges: false);
+            await _entityChecker.GetUserRankAndCheckIfItExist((Guid)userForRegistration.UserRankId, trackChanges: false);
+            await _entityChecker.GetUserByNicknameAndCheck(userForRegistration.Nickname, trackChanges: false);
             
             userForRegistration.Password = PasswordHash.EncodePasswordToBase64(userForRegistration.Password);
 
@@ -44,14 +47,14 @@ namespace Service
 
         public async Task DeleteUserAsync(Guid userId, bool trackChanges)
         {
-            var user = await CheckUserAndGetIfItExist(userId, trackChanges);
+            var user = await _entityChecker.CheckUserAndGetIfItExist(userId, trackChanges);
             _repositoryManager.User.DeleteUser(user);
             await _repositoryManager.SaveAsync();
         }
 
         public async Task<UserDTO> GetUserByIdAsync(Guid userId, bool trackChanges)
         {
-            var user = await CheckUserAndGetIfItExist(userId, trackChanges);
+            var user = await _entityChecker.CheckUserAndGetIfItExist(userId, trackChanges);
             var userToReturn = _mapper.Map<UserDTO>(user);
             return userToReturn;
         }
@@ -66,8 +69,9 @@ namespace Service
         //Проверка на user rank id
         public async Task<UserDTO> UpdateUserAsync(Guid userId, UserForUpdateDTO userForUpdate, bool trackChanges)
         {
-            await GetUserByNicknameAndCheck(userForUpdate.Nickname, trackChanges);
-            var user = await CheckUserAndGetIfItExist(userId, trackChanges);
+            await _entityChecker.GetUserByNicknameAndCheck(userForUpdate.Nickname, trackChanges);
+            await _entityChecker.GetUserRankAndCheckIfItExist((Guid)userForUpdate.UserRankId, trackChanges: false);
+            var user = await _entityChecker.CheckUserAndGetIfItExist(userId, trackChanges);
 
             if(userForUpdate.Password != user.Password)
                 userForUpdate.Password = PasswordHash.EncodePasswordToBase64(userForUpdate.Password);
@@ -77,22 +81,6 @@ namespace Service
 
             var userToReturn = _mapper.Map<UserDTO>(user);
             return userToReturn;
-        }
-
-        private async Task<User> CheckUserAndGetIfItExist(Guid userId, bool trackChanges)
-        {
-            var user = await _repositoryManager.User.GetUserAsync(userId, trackChanges);
-            if (user is null)
-                throw new NotFoundException($"User with id: {userId} was not found");
-            return user;
-        }
-
-        private async Task<User> GetUserByNicknameAndCheck(string nickname, bool trackChanges)
-        {
-            var user = await _repositoryManager.User.GetUserByNicknameAsync(nickname, trackChanges: false);
-            if (user is not null)
-                throw new BadRequestException($"User with nickname {user.Nickname} already exist");
-            return user;
-        }
+        }        
     }
 }
