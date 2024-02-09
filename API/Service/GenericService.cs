@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
 using Repository;
@@ -13,32 +14,35 @@ namespace Service
 {
     public abstract class GenericService<T> : IGenericService<T> where T : class
     {
-        protected RepositoryManager _repositoryManager;
-        protected IMapper _mapper;
+        protected IRepositoryManager _repositoryManager;
+        protected IMapper _mapper;       
+        protected delegate Task<T> CheckEntityAndGetIfItExist(Guid entityId, bool trackChanges);
 
-        protected GenericService(RepositoryManager repositoryManager, IMapper mapper)
+        protected GenericService(IRepositoryManager repositoryManager, IMapper mapper)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
         }
 
-        public async Task<T> CreateAsync<Tentity>(Tentity entity)
+        public async Task<TentityToReturn> CreateAsync<TentityToChange, TentityToReturn>(TentityToChange entity)
         {
             if (entity is null)
-                throw new BadRequestException($"This entity {typeof(Tentity).Name} is incorrect");
+                throw new BadRequestException($"This entity {typeof(TentityToChange).Name} is incorrect");
 
             var mapEntity = _mapper.Map<T>(entity);
             
             _repositoryManager.Set<T>().CreateEntity(mapEntity);
             await _repositoryManager.SaveAsync();
 
-            return mapEntity;
+            var entityToReturn = _mapper.Map<TentityToReturn>(mapEntity);
+
+            return entityToReturn;
         }            
 
 
-        public async Task DeleteAsync(Guid entityId, bool trackChanges)
+        public async Task DeleteAsync(Guid entityId, bool trackChanges, IGenericService<T>.CheckEntityAndGetIfItExist getEntityIfItExist)
         {
-            var entity = await CheckEntityAndGetIfItExist(entityId, trackChanges);
+            var entity = await getEntityIfItExist(entityId, trackChanges);
 
             _repositoryManager.Set<T>().DeleteEntity(entity);
             await _repositoryManager.SaveAsync();
@@ -51,17 +55,20 @@ namespace Service
             return entitiesToReturn;
         }
 
-        public async Task<Tentity> GetByIdAsync<Tentity>(Guid entityId, bool trackChanges)
+        public async Task<Tentity> GetByIdAsync<Tentity>(Guid entityId, bool trackChanges, IGenericService<T>.CheckEntityAndGetIfItExist getEntityIfItExist)
         {
-            var entity = await CheckEntityAndGetIfItExist(entityId, trackChanges);
+            var entity = await getEntityIfItExist(entityId, trackChanges);
 
             var entityToReturn = _mapper.Map<Tentity>(entity);
             return entityToReturn;
         }
 
-        public async Task<TentityToReturn> UpdateAsync<TentityToChange, TentityToReturn>(Guid entityId, TentityToChange entityForManipulation, bool trackChanges)
+        public async Task<TentityToReturn> UpdateAsync<TentityToChange, TentityToReturn>(Guid entityId,
+                                                                                         TentityToChange entityForManipulation,
+                                                                                         bool trackChanges,
+                                                                                         IGenericService<T>.CheckEntityAndGetIfItExist getEntityIfItExist)
         {
-            var entity = await CheckEntityAndGetIfItExist(entityId, trackChanges);
+            var entity = await getEntityIfItExist(entityId, trackChanges);
 
             _mapper.Map(entityForManipulation, entity);
             await _repositoryManager.SaveAsync();
@@ -70,16 +77,16 @@ namespace Service
             return entityToReturn;
         }
 
-        private async Task<T> CheckEntityAndGetIfItExist(Guid entityId, bool trackChanges)
-        {
-            var entity = await _repositoryManager
-                .Set<T>()
-                .GetGyConditionAsync(x => (Guid)x.GetType().GetProperties().First().GetValue(x) == entityId, trackChanges);
+        //private async Task<T> CheckEntityAndGetIfItExist(Guid entityId, bool trackChanges)
+        //{
+        //    var entity = await _repositoryManager
+        //        .Set<T>()
+        //        .GetGyConditionAsync(x => (Guid)x.GetType().GetProperties().First().GetValue(x) == entityId, trackChanges);
 
-            if (entity is null)
-                throw new NotFoundException($"Entity {typeof(T).Name} with id {entityId} not found");
+        //    if (entity is null)
+        //        throw new NotFoundException($"Entity {typeof(T).Name} with id {entityId} not found");
 
-            return entity;
-        }
+        //    return entity;
+        //}
     }
 }

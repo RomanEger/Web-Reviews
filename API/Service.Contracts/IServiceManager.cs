@@ -9,5 +9,6 @@ namespace Service.Contracts
     public interface IServiceManager
     {
         IVideoStatusesService VideoStatuses { get; }
+        IUserService User { get; }
     }
 }

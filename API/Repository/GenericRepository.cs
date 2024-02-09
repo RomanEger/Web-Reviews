@@ -28,7 +28,7 @@ namespace Repository
 
         public async Task<T> GetGyConditionAsync(Expression<Func<T, bool>> expression, bool trackChanges) =>
             await FindByConditions(expression, trackChanges)
-                .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync();            
 
         public void UpdateEntity(T entity) =>
             Update(entity);
