@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DataTransferObjects
 {
-    public class UserForUpdateDTO
+    public record UserForUpdateDTO
     {
         [Required(ErrorMessage = "Nickname field is required")]
         [Length(4, 25, ErrorMessage = "Nickname length should be between 4 and 25 chars")]
