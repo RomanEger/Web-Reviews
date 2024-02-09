@@ -10,6 +10,8 @@ namespace Contracts
     public interface IRepositoryManager
     {
         IGenericRepository<Videostatus> VideoStatuses { get; }
+        IGenericRepository<Userrank> UserRank { get; }
+        IUserRepository User {  get; }
         Task SaveAsync();
         IGenericRepository<T> Set<T>() where T : class;
     }

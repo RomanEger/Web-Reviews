@@ -6,6 +6,7 @@ using MockQueryable.Moq;
 using Moq;
 using Repository;
 using Service;
+using Service.Helpers;
 using Shared.DataTransferObjects;
 using System;
 using System.Collections.Generic;
@@ -45,9 +46,9 @@ namespace WebReviews.Tests.Systems.Services
             });
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
+            var entityChecker = new EntityChecker(repositoryManager);
 
-            
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker);
 
             await serviceManager.VideoStatuses.CreateVideoStatusAsync(referenceDTO);
 
@@ -77,9 +78,9 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
+            var entityChecker = new EntityChecker(repositoryManager);
 
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker);
 
             var entity = await serviceManager.VideoStatuses.GetVideoStatusByIdAsync(guid, trackChanges: true);
 
@@ -108,9 +109,9 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
+            var entityChecker = new EntityChecker(repositoryManager);
 
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker);
 
             var entities = await serviceManager.VideoStatuses.GetVideoStatusesAsync(trackChanges: true);
 
@@ -140,9 +141,9 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
+            var entityChecker = new EntityChecker(repositoryManager);
 
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker);
 
             var entitiy = await serviceManager.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true);
 
@@ -176,9 +177,9 @@ namespace WebReviews.Tests.Systems.Services
             });
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
+            var entityChecker = new EntityChecker(repositoryManager);
 
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker);
 
             await serviceManager.VideoStatuses.DeleteVideoStatusAsync(guid, trackChanges:true);
 
@@ -208,9 +209,9 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
+            var entityChecker = new EntityChecker(repositoryManager);
 
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker);
 
             //var entitiy = await serviceManager.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true);
 
@@ -239,9 +240,9 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
+            var entityChecker = new EntityChecker(repositoryManager);
 
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper);
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker);
 
             //var entitiy = await serviceManager.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true);
 
