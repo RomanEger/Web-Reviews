@@ -24,11 +24,14 @@ namespace WebReviews.Tests.Systems.Services
             var fixture = new UserFixture();
 
             var created = false;
-            var user = fixture.GetRandomData(1).BuildMock().BuildMockDbSet();
+            var users = fixture.GetRandomData(2).BuildMock().BuildMockDbSet();
 
             var userForCreation = new UserForRegistrationDTO
             {
-
+                Nickname = "Oleg",
+                Email = "oleg@mail.ru",
+                Password = "1234",
+                UserRankId = new Guid()
             };
 
             var mockAutoMapper = new MapperConfiguration(cfg =>
@@ -39,6 +42,7 @@ namespace WebReviews.Tests.Systems.Services
             var autoMapper = mockAutoMapper.CreateMapper();
 
             var mockContext = new Mock<WebReviewsContext>();
+            mockContext.Setup(x => x.Set<User>()).Returns(users.Object);
             mockContext.Setup(x => x.Set<User>().Add(It.IsAny<User>())).Callback(() =>
             {
                 created = true;
@@ -64,11 +68,6 @@ namespace WebReviews.Tests.Systems.Services
             var users = fixture.GetTestData().BuildMock().BuildMockDbSet();
             var guid = new Guid("6d395f54-d2ab-4f39-aa0e-cce27734b8ec");
 
-            var userForCreation = new UserForCreationDTO
-            {
-
-            };
-
             var mockAutoMapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new MappingProfiles());
@@ -88,7 +87,7 @@ namespace WebReviews.Tests.Systems.Services
 
             var serviceManager = new ServiceManager(repositoryManager, autoMapper);
 
-            await serviceManager.User.DeleteUserAsync(guid,userForCreation, trackChanges: true);
+            await serviceManager.User.DeleteUserAsync(guid, trackChanges: true);
 
             deleted.Should().BeTrue();
             mockContext.Verify(x => x.Set<User>().Remove(It.IsAny<User>()), Times.Once());
@@ -148,21 +147,24 @@ namespace WebReviews.Tests.Systems.Services
 
             var serviceManager = new ServiceManager(repositoryManager, autoMapper);
 
-            var user = await serviceManager.User.GetUserById(guid,trackChanges: false);
+            var user = await serviceManager.User.GetUserByIdAsync(guid, trackChanges: false);
 
             user.Should().NotBeNull();
         }
 
         [Fact]
-        public async Task Get_OnSuccess_Created_User_And_Returned_User()
+        public async Task Get_OnSuccess_Updated_User_And_Returned_User()
         {
             var fixture = new UserFixture();
 
-            var user = fixture.GetRandomData(1).BuildMock().BuildMockDbSet();
+            var users = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var guid = new Guid("08feaf40-ea7f-404d-ade6-b2fb1c009403");
 
             var userForUpdate = new UserForUpdateDTO
             {
-
+                Nickname = "makklaud",
+                Password = "password",
+                UserRankId = new Guid()                
             };
 
             var mockAutoMapper = new MapperConfiguration(cfg =>
@@ -173,17 +175,14 @@ namespace WebReviews.Tests.Systems.Services
             var autoMapper = mockAutoMapper.CreateMapper();
 
             var mockContext = new Mock<WebReviewsContext>();
-            mockContext.Setup(x => x.Set<User>().Add(It.IsAny<User>())).Callback(() =>
-            {
-                created = true;
-            });
+            mockContext.Setup(x => x.Set<User>()).Returns(users.Object);
 
             var repositoryManager = new RepositoryManager(mockContext.Object);
 
 
             var serviceManager = new ServiceManager(repositoryManager, autoMapper);
 
-            var updateUser = await serviceManager.User.UpdateUserAsync(userForCreation);
+            var updateUser = await serviceManager.User.UpdateUserAsync(guid, userForUpdate, trackChanges: true);
 
             updateUser.Nickname.Should().Be("makklaud");
         }
