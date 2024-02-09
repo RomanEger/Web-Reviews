@@ -1,0 +1,36 @@
+@inject IHttpClientFactory ClientFactory 
+@inject IJSRuntime JsRuntime 
+@rendermode RenderMode.InteractiveServer
+
+@page "/item"
+@using System.Text.Json
+<PageTitle>hello page</PageTitle>
+<h3>@item</h3>
+<p>@result1</p>
+<p>@result2</p>
+<p>@result3</p>
+<button @onclick="Get">Click me</button>
+@code {
+
+    string item = "hello world";
+
+    string result1, result2, result3;
+
+    class VideoStatus
+    {
+        public Guid id { get; set; }
+        public string? title { get; set; }
+    }
+    
+    async Task Get()
+    {
+        var httpClient = ClientFactory.CreateClient();
+        var response = await httpClient.GetAsync("https://localhost:7062/api/videostatuses");
+        result1 = "nice1";
+        var r = await response.Content.ReadAsStringAsync();
+        result2 = "nice2";
+        var obj = JsonSerializer.Deserialize<List<VideoStatus>>(r) ?? new List<VideoStatus>();
+        result3 = "nice3";
+        item = obj[0].title ?? "null title";
+    }
+}
