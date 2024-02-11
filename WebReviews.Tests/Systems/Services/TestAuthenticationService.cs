@@ -98,7 +98,7 @@ namespace WebReviews.Tests.Systems.Services
             {
                 ValidIssuer = "IRateAPI",
                 ValidAudience = "IRateHttps",
-                ValidExpires = "5",
+                Expires = "5",
                 RefreshTokenExpiresDays = "3",
                 SecretKey = "Secret key which we need to change, mb put in environment"
             });
@@ -143,7 +143,7 @@ namespace WebReviews.Tests.Systems.Services
             {
                 ValidIssuer = "IRateAPI",
                 ValidAudience = "IRateHttps",
-                ValidExpires = "5",
+                Expires = "5",
                 RefreshTokenExpiresDays = "3",
                 SecretKey = "Secret key which we need to change, mb put in environment"
             });
