@@ -61,8 +61,8 @@ namespace Service
         public async Task<bool> ValidateUser(UserForAuthenticationDTO userForAuthentication)
         {
             _user = await _repositoryManager.User.GetUserByNicknameAsync(userForAuthentication.Nickname, trackChanges: true);
-            var decodedUserPassword = PasswordHash.DecodeFrom64(_user.Password);
-            return _user is not null && decodedUserPassword == userForAuthentication.Password;
+            return _user is not null 
+                && PasswordHash.DecodeFrom64(_user.Password) == userForAuthentication.Password;
         }
 
         public async Task<TokenDTO> CreateToken(bool populateExp)
