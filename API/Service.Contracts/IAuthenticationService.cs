@@ -9,8 +9,9 @@ namespace Service.Contracts
 {
     public interface IAuthenticationService
     {
-        Task<UserDTO> CreateUserAsync(UserForRegistrationDTO userForRegistration);
+        Task CreateUserAsync(UserForRegistrationDTO userForRegistration);
         Task<TokenDTO> CreateToken(bool populateExp);
         Task<TokenDTO> RefreshToken(TokenDTO tokenDTO);
+        Task<bool> ValidateUser(UserForAuthenticationDTO userForAuthentication);
     }
 }

@@ -38,7 +38,7 @@ namespace Service
             _entityChecker = entityChecker;
         }
 
-        public async Task<UserDTO> CreateUserAsync(UserForRegistrationDTO userForRegistration)
+        public async Task CreateUserAsync(UserForRegistrationDTO userForRegistration)
         {
             var user = await _repositoryManager.User.GetUserByEmailAsync(userForRegistration.Nickname, trackChanges: false);
             if (user is not null)
@@ -54,14 +54,15 @@ namespace Service
             _repositoryManager.User.CreateUser(user);
             await _repositoryManager.SaveAsync();
 
-            var userToReturn = _mapper.Map<UserDTO>(user);
-            return userToReturn;
+            //var userToReturn = _mapper.Map<UserDTO>(user);
+            //return userToReturn;
         }
 
         public async Task<bool> ValidateUser(UserForAuthenticationDTO userForAuthentication)
         {
             _user = await _repositoryManager.User.GetUserByNicknameAsync(userForAuthentication.Nickname, trackChanges: true);
-            return _user is not null && _user.Password == userForAuthentication.Password;
+            var decodedUserPassword = PasswordHash.DecodeFrom64(_user.Password);
+            return _user is not null && decodedUserPassword == userForAuthentication.Password;
         }
 
         public async Task<TokenDTO> CreateToken(bool populateExp)

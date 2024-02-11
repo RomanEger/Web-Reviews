@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.ActionFilters;
 using Service.Contracts;
@@ -22,6 +23,7 @@ namespace Presentation.Controllers
             _serviceManager = serviceManager;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetVideoStatuses()
         {
