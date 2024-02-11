@@ -14,5 +14,6 @@ namespace Service.Contracts
         Task<UserDTO> GetUserByIdAsync(Guid userId, bool trackChanges);
         Task<UserDTO> UpdateUserAsync(Guid userId, UserForUpdateDTO userForUpdate, bool trackChanges);
         Task DeleteUserAsync(Guid userId, bool trackChanges);
+        Task<UserDTO> CreateUserAsync(UserForRegistrationDTO userForRegistration);
     }
 }

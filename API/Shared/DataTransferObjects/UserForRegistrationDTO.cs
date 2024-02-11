@@ -15,7 +15,6 @@ namespace Shared.DataTransferObjects
 
         [Required(ErrorMessage = "Email field is required")]
         [MaxLength(30, ErrorMessage ="Email should be less than 30 chars")]
-        [EmailAddress]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Nickname field is required")]
