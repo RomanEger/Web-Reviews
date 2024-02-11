@@ -25,25 +25,7 @@ namespace Service
             _entityChecker = entityChecker;
         }
 
-        public async Task<UserDTO> CreateUserAsync(UserForRegistrationDTO userForRegistration)
-        {
-            var user = await _repositoryManager.User.GetUserByEmailAsync(userForRegistration.Nickname, trackChanges: false);
-            if (user is not null)
-                throw new BadRequestException($"User with email {user.Email} already exist");
-
-            await _entityChecker.GetUserRankAndCheckIfItExist((Guid)userForRegistration.UserRankId, trackChanges: false);
-            await _entityChecker.GetUserByNicknameAndCheck(userForRegistration.Nickname, trackChanges: false);
-            
-            userForRegistration.Password = PasswordHash.EncodePasswordToBase64(userForRegistration.Password);
-
-            user = _mapper.Map<User>(userForRegistration);
-
-            _repositoryManager.User.CreateUser(user);
-            await _repositoryManager.SaveAsync();
-
-            var userToReturn = _mapper.Map<UserDTO>(user);
-            return userToReturn;
-        }
+       
 
         public async Task DeleteUserAsync(Guid userId, bool trackChanges)
         {

@@ -14,6 +14,8 @@ builder.Services.ConfigureServiceManager();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<EntityChecker>();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.ConfigureJwtSetting(builder.Configuration);
+builder.Services.ConfigureJwt(builder.Configuration);
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -45,7 +47,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.All
 }); ;
 app.UseCors("CorsPolicy");
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
