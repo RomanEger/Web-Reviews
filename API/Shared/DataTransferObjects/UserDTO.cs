@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DataTransferObjects
 {
-    public class UserDTO
+    public record UserDTO
     {
         public Guid UserId { get; init; }
 
@@ -20,7 +20,5 @@ namespace Shared.DataTransferObjects
         public Guid UserRankId { get; init; }
 
         public byte[]? Photo { get; init; }
-
-        public Userrank UserRank { get; init; }
     }
 }

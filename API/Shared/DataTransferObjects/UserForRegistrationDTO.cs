@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DataTransferObjects
 {
-    public class UserForRegistrationDTO
+    public record UserForRegistrationDTO
     {
         [Required(ErrorMessage ="Nickname field is required")]
         [Length(4, 25,ErrorMessage ="Nickname length should be between 4 and 25 chars")]
@@ -15,6 +15,7 @@ namespace Shared.DataTransferObjects
 
         [Required(ErrorMessage = "Email field is required")]
         [MaxLength(30, ErrorMessage ="Email should be less than 30 chars")]
+        [EmailAddress]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Nickname field is required")]
