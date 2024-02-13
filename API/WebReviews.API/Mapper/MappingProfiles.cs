@@ -13,7 +13,7 @@ namespace WebReviews.API.Mapper
             CreateMap<ReferenceForManipulationDTO, Videostatus>()
                 .ReverseMap();
 
-            CreateMap<UserForUpdateDTO, User>();
+            CreateMap<UserForUpdateDTO, User>().ReverseMap();
             CreateMap<User, UserDTO>();
             CreateMap<UserForRegistrationDTO, User>();
         }
