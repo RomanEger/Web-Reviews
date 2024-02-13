@@ -18,12 +18,14 @@ namespace Service
         private readonly Lazy<IVideoStatusesService> _videoStatusesService;
         private readonly Lazy<IUserService> _userService;
         private readonly Lazy<IAuthenticationService> _authenticationService;
+        private readonly Lazy<IUserRankService> _userRankService;
 
         public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, EntityChecker entityChecker, IOptions<JwtConfiguration> configuration)
         {
             _videoStatusesService = new Lazy<IVideoStatusesService>(() => new VideoStatusesService(repositoryManager, mapper, entityChecker));
             _userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, entityChecker));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(repositoryManager, mapper, configuration, entityChecker));
+            _userRankService = new Lazy<IUserRankService>(() => new UserRankService(repositoryManager, mapper, entityChecker));
         }
 
         public IVideoStatusesService VideoStatuses => _videoStatusesService.Value;
@@ -31,5 +33,7 @@ namespace Service
         public IUserService User => _userService.Value;
 
         public IAuthenticationService Authentication => _authenticationService.Value;
+
+        public IUserRankService UserRank => _userRankService.Value;
     }
 }
