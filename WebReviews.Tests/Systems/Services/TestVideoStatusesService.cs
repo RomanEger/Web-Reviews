@@ -46,6 +46,7 @@ namespace WebReviews.Tests.Systems.Services
             serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
             fixture = new GenericFixture();
         }
+
         [Fact]
         public async Task Get_OnSuccess_Created_Entity_And_Returned_Entity()
         {
