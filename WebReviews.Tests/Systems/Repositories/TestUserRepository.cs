@@ -1,4 +1,5 @@
-﻿using Entities.Models;
+﻿using Contracts;
+using Entities.Models;
 using FluentAssertions;
 using MockQueryable.Moq;
 using Moq;
@@ -14,18 +15,24 @@ namespace WebReviews.Tests.Systems.Repositories
 {
     public class TestUserRepository
     {
+        private IRepositoryManager repositoryManager;
+        private Mock<WebReviewsContext> mockContext;
+        private UserFixture fixture;
+
+        public TestUserRepository()
+        {
+            mockContext = new Mock<WebReviewsContext>();
+            repositoryManager = new RepositoryManager(mockContext.Object);
+            fixture = new UserFixture();
+        }
+
         [Fact]
         public async Task Get_OnSucces_IEnumerable_Users_With_Count_4()
         {
-            var fixture = new UserFixture();
-
             var expectedCount = 4;
             var listOfUsers = fixture.GetRandomData(expectedCount).BuildMock().BuildMockDbSet();
 
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<User>()).Returns(listOfUsers.Object);
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
 
             var list = await repositoryManager.User.GetUsersAsync(trackChanges: false);
 
@@ -35,15 +42,10 @@ namespace WebReviews.Tests.Systems.Repositories
         [Fact]
         public async Task Get_OnSucces_User_With_Id()
         {
-            var fixture = new UserFixture();
-
             var listOfUsers = fixture.GetTestData().BuildMock().BuildMockDbSet();
             var guid = new Guid("6d395f54-d2ab-4f39-aa0e-cce27734b8ec");
 
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<User>()).Returns(listOfUsers.Object);
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
 
             var user = await repositoryManager.User.GetUserAsync(guid, trackChanges: false);
 
@@ -54,15 +56,10 @@ namespace WebReviews.Tests.Systems.Repositories
         [Fact]
         public async Task Get_OnSucces_User_With_Nickname_Roman()
         {
-            var fixture = new UserFixture();
-
             var listOfUsers = fixture.GetTestData().BuildMock().BuildMockDbSet();
             var nickname = "Roman";
 
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<User>()).Returns(listOfUsers.Object);
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
 
             var user = await repositoryManager.User.GetUserByNicknameAsync(nickname, trackChanges: false);
 
@@ -73,15 +70,10 @@ namespace WebReviews.Tests.Systems.Repositories
         [Fact]
         public async Task Get_OnSucces_User_With_Empty_Nickname()
         {
-            var fixture = new UserFixture();
-
             var listOfUsers = fixture.GetTestData().BuildMock().BuildMockDbSet();
             var nickname = String.Empty;
 
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<User>()).Returns(listOfUsers.Object);
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
 
             var user = await repositoryManager.User.GetUserByNicknameAsync(nickname, trackChanges: false);
 
@@ -91,15 +83,10 @@ namespace WebReviews.Tests.Systems.Repositories
         [Fact]
         public async Task Get_OnSucces_User_With_Email()
         {
-            var fixture = new UserFixture();
-
             var listOfUsers = fixture.GetTestData().BuildMock().BuildMockDbSet();
             var email = "andrew@mail.ru";
 
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<User>()).Returns(listOfUsers.Object);
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
 
             var user = await repositoryManager.User.GetUserByEmailAsync(email, trackChanges: false);
 
@@ -110,18 +97,13 @@ namespace WebReviews.Tests.Systems.Repositories
         [Fact]
         public async Task Delete_OnSucces_User()
         {
-            var fixture = new UserFixture();
-
             var user = fixture.GetRandomData(1).BuildMock().BuildMockDbSet().Object.First();
             var deleted = false;
 
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<User>().Remove(It.IsAny<User>())).Callback(() =>
             {
                 deleted = true;
             });
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
 
             repositoryManager.User.DeleteUser(user);
 
@@ -132,18 +114,13 @@ namespace WebReviews.Tests.Systems.Repositories
         [Fact]
         public async Task Create_OnSucces_User()
         {
-            var fixture = new UserFixture();
-
             var user = fixture.GetRandomData(1).BuildMock().BuildMockDbSet().Object.First();
             var created = false;
 
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<User>().Add(It.IsAny<User>())).Callback(() =>
             {
                 created = true;
             });
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
 
             repositoryManager.User.CreateUser(user);
 
