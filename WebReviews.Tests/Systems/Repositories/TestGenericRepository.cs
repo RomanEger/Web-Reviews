@@ -56,7 +56,7 @@ namespace WebReviews.Tests.Systems.Repositories
         }
 
         [Fact]
-        public async Task Get_OnSucces_Delete_VideoStatus()
+        public void Get_OnSucces_Delete_VideoStatus()
         {
 
             var deleted = false;
@@ -73,7 +73,7 @@ namespace WebReviews.Tests.Systems.Repositories
         }
 
         [Fact]
-        public async Task Get_OnSucces_Create_VideoStatus()
+        public void Get_OnSucces_Create_VideoStatus()
         {
             var created = false;
             var VideoStatusEntity = fixture.GetRandomData(1).BuildMock().BuildMockDbSet();

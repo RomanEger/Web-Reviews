@@ -95,7 +95,7 @@ namespace WebReviews.Tests.Systems.Repositories
         }
 
         [Fact]
-        public async Task Delete_OnSucces_User()
+        public void Delete_OnSucces_User()
         {
             var user = fixture.GetRandomData(1).BuildMock().BuildMockDbSet().Object.First();
             var deleted = false;
@@ -112,7 +112,7 @@ namespace WebReviews.Tests.Systems.Repositories
         }
 
         [Fact]
-        public async Task Create_OnSucces_User()
+        public void Create_OnSucces_User()
         {
             var user = fixture.GetRandomData(1).BuildMock().BuildMockDbSet().Object.First();
             var created = false;
