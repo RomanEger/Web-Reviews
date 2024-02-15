@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contracts;
 using Entities.ConfigurationModels;
 using Entities.Exceptions;
 using Entities.Models;
@@ -8,6 +9,7 @@ using MockQueryable.Moq;
 using Moq;
 using Repository;
 using Service;
+using Service.Contracts;
 using Service.Helpers;
 using Shared.DataTransferObjects;
 using System;
@@ -22,36 +24,41 @@ namespace WebReviews.Tests.Systems.Services
 {
     public class TestVideoStatusesService
     {
-        [Fact]
-        public async Task Get_OnSuccess_Created_Entity_And_Returned_Entity()
+        private Mock<WebReviewsContext> mockContext;
+        private IMapper autoMapper;
+        private IRepositoryManager repositoryManager;
+        private EntityChecker entityChecker;
+        private IOptions<JwtConfiguration> options;
+        private IServiceManager serviceManager;
+        private GenericFixture fixture;
+        public TestVideoStatusesService()
         {
-            var fixture = new GenericFixture();
-
-            var created = false;
-            var videoStatusEntity = fixture.GetRandomData(1).BuildMock().BuildMockDbSet();
-
-            var referenceDTO = new ReferenceForManipulationDTO { title = "new" };
+            mockContext = new Mock<WebReviewsContext>();
 
             var mockAutoMapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new MappingProfiles());
             });
+            autoMapper = mockAutoMapper.CreateMapper();
+            repositoryManager = new RepositoryManager(mockContext.Object);
+            entityChecker = new EntityChecker(repositoryManager);
+            options = Options.Create(new JwtConfiguration());
+            serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
+            fixture = new GenericFixture();
+        }
 
-            var autoMapper = mockAutoMapper.CreateMapper();
+        [Fact]
+        public async Task Get_OnSuccess_Created_Entity_And_Returned_Entity()
+        {
+            var created = false;
+            var videoStatusEntity = fixture.GetRandomData(1).BuildMock().BuildMockDbSet();
 
-            var videoStatus = autoMapper.Map<Videostatus>(referenceDTO);
+            var referenceDTO = new ReferenceForManipulationDTO { title = "new" };
 
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<Videostatus>().Add(It.IsAny<Videostatus>())).Callback(() =>
             {
                 created = true;
             });
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
-            var entityChecker = new EntityChecker(repositoryManager);
-            var options = Options.Create(new JwtConfiguration());
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
 
             await serviceManager.VideoStatuses.CreateVideoStatusAsync(referenceDTO);
 
@@ -62,29 +69,12 @@ namespace WebReviews.Tests.Systems.Services
         [Fact]
         public async Task Get_OnSuccess_Returned_VideoStatus_With_Id()
         {
-            var fixture = new GenericFixture();
-
-
             var videoStatusEntities = fixture.GetTestData().BuildMock().BuildMockDbSet();
 
             var guid = new Guid("2403cf03-6d26-42db-81d2-78064a44f43d");
 
-            var mockAutoMapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfiles());
-            });
-
-            var autoMapper = mockAutoMapper.CreateMapper();
-
-
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
 
-            var repositoryManager = new RepositoryManager(mockContext.Object);
-            var entityChecker = new EntityChecker(repositoryManager);
-            var options = Options.Create(new JwtConfiguration());
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
 
             var entity = await serviceManager.VideoStatuses.GetVideoStatusByIdAsync(guid, trackChanges: true);
 
@@ -94,29 +84,11 @@ namespace WebReviews.Tests.Systems.Services
         [Fact]
         public async Task Get_OnSuccess_Returned_List_Of_VideoStatuses()
         {
-            var fixture = new GenericFixture();
-
             var expectedCount = 3;
             var videoStatusEntities = fixture.GetTestData().BuildMock().BuildMockDbSet();
 
-
-
-            var mockAutoMapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfiles());
-            });
-
-            var autoMapper = mockAutoMapper.CreateMapper();
-
-
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
 
-            var repositoryManager = new RepositoryManager(mockContext.Object);
-            var entityChecker = new EntityChecker(repositoryManager);
-            var options = Options.Create(new JwtConfiguration());
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
 
             var entities = await serviceManager.VideoStatuses.GetVideoStatusesAsync(trackChanges: true);
 
@@ -126,30 +98,12 @@ namespace WebReviews.Tests.Systems.Services
         [Fact]
         public async Task Get_OnSuccess_Returned_Updated_VideoStatus_WithTitle_Updated()
         {
-            var fixture = new GenericFixture();
-
             var expectedCount = 3;
             var videoStatusEntities = fixture.GetTestData().BuildMock().BuildMockDbSet();
             var guid = new Guid("2403cf03-6d26-42db-81d2-78064a44f43d");
             var referenceForManipulation = new ReferenceForManipulationDTO { title = "Updated" };
 
-
-            var mockAutoMapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfiles());
-            });
-
-            var autoMapper = mockAutoMapper.CreateMapper();
-
-
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
-            var entityChecker = new EntityChecker(repositoryManager);
-            var options = Options.Create(new JwtConfiguration());
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
 
             var entitiy = await serviceManager.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true);
 
@@ -161,32 +115,17 @@ namespace WebReviews.Tests.Systems.Services
         [Fact]
         public async Task Get_OnSuccess_Deleted_VideoStatus_ById()
         {
-            var fixture = new GenericFixture();
-
             var deleted = false;
             var videoStatusEntities = fixture.GetTestData().BuildMock().BuildMockDbSet();
             var guid = new Guid("2403cf03-6d26-42db-81d2-78064a44f43d");
 
 
-            var mockAutoMapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfiles());
-            });
-
-            var autoMapper = mockAutoMapper.CreateMapper();
-
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
             mockContext.Setup(x => x.Set<Videostatus>().Remove(It.IsAny<Videostatus>())).Callback(() =>
             {
                 deleted = true;
             });
 
-            var repositoryManager = new RepositoryManager(mockContext.Object);
-            var entityChecker = new EntityChecker(repositoryManager);
-            var options = Options.Create(new JwtConfiguration());
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
 
             await serviceManager.VideoStatuses.DeleteVideoStatusAsync(guid, trackChanges:true);
 
@@ -197,31 +136,11 @@ namespace WebReviews.Tests.Systems.Services
         [Fact]
         public async Task Get_Failed_Update_With_Incorrect_Id_Returned_NotFoundException()
         {
-            var fixture = new GenericFixture();
-
             var videoStatusEntities = fixture.GetTestData().BuildMock().BuildMockDbSet();
             var guid = new Guid("2433cf03-6d26-42db-81d2-78064a44f43d");
             var referenceForManipulation = new ReferenceForManipulationDTO { title = "Updated" };
 
-
-            var mockAutoMapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfiles());
-            });
-
-            var autoMapper = mockAutoMapper.CreateMapper();
-
-
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
-            var entityChecker = new EntityChecker(repositoryManager);
-            var options = Options.Create(new JwtConfiguration());
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
-
-            //var entitiy = await serviceManager.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true);
 
             await serviceManager.Invoking(async c => await c.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true))
                 .Should().ThrowAsync<NotFoundException>();
@@ -230,30 +149,10 @@ namespace WebReviews.Tests.Systems.Services
         [Fact]
         public async Task Get_Failed_With_GetById_Incorrect_Id_Returned_NotFoundException()
         {
-            var fixture = new GenericFixture();
-
             var videoStatusEntities = fixture.GetTestData().BuildMock().BuildMockDbSet();
             var guid = new Guid("2433cf03-6d26-42db-81d2-78064a44f43d");
 
-
-            var mockAutoMapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfiles());
-            });
-
-            var autoMapper = mockAutoMapper.CreateMapper();
-
-
-            var mockContext = new Mock<WebReviewsContext>();
             mockContext.Setup(x => x.Set<Videostatus>()).Returns(videoStatusEntities.Object);
-
-            var repositoryManager = new RepositoryManager(mockContext.Object);
-            var entityChecker = new EntityChecker(repositoryManager);
-            var options = Options.Create(new JwtConfiguration());
-
-            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
-
-            //var entitiy = await serviceManager.VideoStatuses.UpdateVideoStatus(guid, referenceForManipulation, trackChanges: true);
 
             await serviceManager.Invoking(async c => await c.VideoStatuses.GetVideoStatusByIdAsync(guid, trackChanges: true))
                 .Should().ThrowAsync<NotFoundException>();

@@ -10,7 +10,7 @@ namespace Shared.DataTransferObjects
     public record ReferenceForManipulationDTO
     {
         [Required(ErrorMessage="Field title is required")]
-        [Length(minimumLength: 1, maximumLength: 100, ErrorMessage ="Title length could be between 1 and 50 chars")]
+        [Length(minimumLength: 1, maximumLength: 50, ErrorMessage ="Title length could be between 1 and 50 chars")]
         public string? title {  get; init; }
     }
 }
