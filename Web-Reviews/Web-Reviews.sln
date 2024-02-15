@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "..\API\Shared\Sha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation", "..\API\Presentation\Presentation.csproj", "{3AD713F9-0BC2-4C00-9D90-1BB2420B4119}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebReviews.Tests", "..\WebReviews.Tests\WebReviews.Tests.csproj", "{1FB3AEE9-93F6-402A-BB57-B2CE0614A130}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebReviews.Tests", "..\WebReviews.Tests\WebReviews.Tests.csproj", "{1FB3AEE9-93F6-402A-BB57-B2CE0614A130}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

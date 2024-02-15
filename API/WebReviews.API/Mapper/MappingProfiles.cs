@@ -9,7 +9,7 @@ namespace WebReviews.API.Mapper
         public MappingProfiles()
         {
             CreateMap<Videostatus, ReferenceDTO>()
-                .ForMember("id", x=> x.MapFrom(a => a.VideoStatusId));
+                .ForMember("id", x => x.MapFrom(a => a.VideoStatusId));
             CreateMap<ReferenceForManipulationDTO, Videostatus>()
                 .ReverseMap();
 
@@ -19,7 +19,7 @@ namespace WebReviews.API.Mapper
 
             CreateMap<UserForUpdateDTO, User>().ReverseMap();
             CreateMap<User, UserDTO>();
-            CreateMap<UserForRegistrationDTO, User>();
+            CreateMap<UserForRegistrationDTO, User>().ReverseMap();
         }
     }
 }
