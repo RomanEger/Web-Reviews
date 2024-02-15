@@ -1,6 +1,10 @@
 ﻿using Contracts;
+using Entities.Models;
+using FluentAssertions;
+using MockQueryable.Moq;
 using Moq;
 using Repository;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +18,77 @@ namespace WebReviews.Tests.Systems.Repositories
     {
         private IRepositoryManager repositoryManager;
         private Mock<WebReviewsContext> mockContext;
-        private UserFixture fixture;
+        private VideoFixture fixture;
 
         public TestVideoRepository()
         {
             mockContext = new Mock<WebReviewsContext>();
             repositoryManager = new RepositoryManager(mockContext.Object);
-            fixture = new UserFixture();
+            fixture = new VideoFixture();
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_ReturnedListOfVideo_Count_5()
+        {
+            var allDbEntitiesCount = 15;
+            var expectedCount = 5;
+            var listOfVideo = fixture.GetRandomData(allDbEntitiesCount).BuildMock().BuildMockDbSet();
+            var videoParameters = new VideoParameters { PageNumber = 2};
+
+            mockContext.Setup(x => x.Set<Video>()).Returns(listOfVideo.Object);
+
+            var result = await repositoryManager.Video.GetVideosAsync(videoParameters, trackChanges: false);
+
+            result.Should().BeOfType<PagedList<Video>>();
+            result.Should().HaveCount(expectedCount);
+            result.MetaData.HasPrevious.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_ReturnedVideo_WithId()
+        {
+            var videoId = new Guid("a0f3b4a6-1b7c-4376-a215-94839db1c5fb");
+            var listOfVideo = fixture.GetTestData().BuildMock().BuildMockDbSet();
+
+            mockContext.Setup(x => x.Set<Video>()).Returns(listOfVideo.Object);
+
+            var result = await repositoryManager.Video.GetVideoAsync(videoId, trackChanges: false);
+
+            result.Should().NotBeNull();            
+        }
+
+        [Fact]
+        public void Get_OnSuccess_CreatedVideo()
+        {
+            var created = false;
+            var video = fixture.GetTestData().First();
+
+            mockContext.Setup(x => x.Set<Video>().Add(It.IsAny<Video>())).Callback(() =>
+            {
+                created = true;
+            });
+
+            repositoryManager.Video.CreateVideo(video);
+
+            created.Should().BeTrue();
+            mockContext.Verify(x => x.Set<Video>().Add(It.IsAny<Video>()), Times.Once);
+        }
+
+        [Fact]
+        public void Get_OnSuccess_DeletedVideo()
+        {
+            var deleted = false;
+            var video = fixture.GetTestData().First();
+
+            mockContext.Setup(x => x.Set<Video>().Remove(It.IsAny<Video>())).Callback(() =>
+            {
+                deleted = true;
+            });
+
+            repositoryManager.Video.DeleteVideo(video);
+
+            deleted.Should().BeTrue();
+            mockContext.Verify(x => x.Set<Video>().Remove(It.IsAny<Video>()), Times.Once);
         }
     }
 }

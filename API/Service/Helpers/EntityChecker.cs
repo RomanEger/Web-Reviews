@@ -48,6 +48,12 @@ namespace Service.Helpers
             return GenerateNotFoundException(userRank, $"User rank with id: {userRankId} was not found");
         }
 
+        public async Task<Video> GetVideoAndCheckIfItExist(Guid videoId, bool trackChanges)
+        {
+            var video = await _repositoryManager.Video.GetVideoAsync(videoId, trackChanges);
+            return GenerateNotFoundException(video, $"Video with id: {videoId} was not found");
+        }
+
         private TEntity GenerateNotFoundException<TEntity>(TEntity entity, string message) => 
             entity is null
             ? throw new NotFoundException(message)
