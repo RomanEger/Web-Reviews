@@ -18,6 +18,8 @@ using Microsoft.Extensions.Options;
 using Entities.ConfigurationModels;
 using Contracts;
 using Service.Contracts;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Entities.Exceptions;
 
 namespace WebReviews.Tests.Systems.Services
 {
@@ -74,6 +76,90 @@ namespace WebReviews.Tests.Systems.Services
                         
             created.Should().BeTrue();
             mockContext.Verify(x => x.Set<User>().Add(It.IsAny<User>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_Throw_BadRequestException_Email()
+        {
+            var created = false;
+            var users = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var userRankGuid = new Guid("3ab56b8e-c3ae-45c3-b9cb-f1a313a61ae5");
+            var userRanks = new List<Userrank>() { new() { UserRankId = userRankGuid, Title = "Бог" } }.BuildMock().BuildMockDbSet();
+
+            var userForCreation = new UserForRegistrationDTO
+            {
+                Nickname = "MakkLaud",
+                Email = "MakkLaud@mail.ru",
+                Password = "password",
+                UserRankId = userRankGuid
+            };
+
+            mockContext.Setup(x => x.Set<User>()).Returns(users.Object);
+            mockContext.Setup(x => x.Set<User>().Add(It.IsAny<User>())).Callback(() =>
+            {
+                created = true;
+            });
+            mockContext.Setup(x => x.Set<Userrank>()).Returns(userRanks.Object);
+            
+            await serviceManager.Invoking(async x => await x.Authentication.CreateUserAsync(userForCreation)).Should().ThrowAsync<BadRequestException>();
+
+            created.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_Throw_BadRequestException_Nickname()
+        {
+            var created = false;
+            var users = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var userRankGuid = new Guid("3ab56b8e-c3ae-45c3-b9cb-f1a313a61ae5");
+            var userRanks = new List<Userrank>() { new() { UserRankId = userRankGuid, Title = "Бог" } }.BuildMock().BuildMockDbSet();
+
+            var userForCreation = new UserForRegistrationDTO
+            {
+                Nickname = "MakkLaud",
+                Email = "MakkLau23d@mail.ru",
+                Password = "password",
+                UserRankId = userRankGuid
+            };
+
+            mockContext.Setup(x => x.Set<User>()).Returns(users.Object);
+            mockContext.Setup(x => x.Set<User>().Add(It.IsAny<User>())).Callback(() =>
+            {
+                created = true;
+            });
+            mockContext.Setup(x => x.Set<Userrank>()).Returns(userRanks.Object);
+
+            await serviceManager.Invoking(async x => await x.Authentication.CreateUserAsync(userForCreation)).Should().ThrowAsync<BadRequestException>();
+
+            created.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_Throw_NotFoundException_UserRankId()
+        {
+            var created = false;
+            var users = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var userRankGuid = new Guid("3ab56b7e-c2ae-45c3-b9cb-f1a313a61ae5");
+            var userRanks = new List<Userrank>() { new() { UserRankId = userRankGuid, Title = "Бог" } }.BuildMock().BuildMockDbSet();
+
+            var userForCreation = new UserForRegistrationDTO
+            {
+                Nickname = "MakkLaud2323",
+                Email = "MakkLau23d@mail.ru",
+                Password = "password",
+                UserRankId = Guid.NewGuid()
+            };
+
+            mockContext.Setup(x => x.Set<User>()).Returns(users.Object);
+            mockContext.Setup(x => x.Set<User>().Add(It.IsAny<User>())).Callback(() =>
+            {
+                created = true;
+            });
+            mockContext.Setup(x => x.Set<Userrank>()).Returns(userRanks.Object);
+
+            await serviceManager.Invoking(async x => await x.Authentication.CreateUserAsync(userForCreation)).Should().ThrowAsync<NotFoundException>();
+
+            created.Should().BeFalse();
         }
 
         [Fact]

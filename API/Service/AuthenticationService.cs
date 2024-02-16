@@ -40,7 +40,7 @@ namespace Service
 
         public async Task CreateUserAsync(UserForRegistrationDTO userForRegistration)
         {
-            var user = await _repositoryManager.User.GetUserByEmailAsync(userForRegistration.Nickname, trackChanges: false);
+            var user = await _repositoryManager.User.GetUserByEmailAsync(userForRegistration.Email, trackChanges: false);
             if (user is not null)
                 throw new BadRequestException($"User with email {user.Email} already exist");
 
