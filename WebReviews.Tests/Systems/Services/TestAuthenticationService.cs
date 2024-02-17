@@ -171,7 +171,7 @@ namespace WebReviews.Tests.Systems.Services
 
             var userForCreation = new UserForAuthenticationDTO
             {
-                Nickname = "MakkLaud",
+                UserPersonalData = "MakkLaud",
                 Password = "password"
             };
 
@@ -204,7 +204,7 @@ namespace WebReviews.Tests.Systems.Services
 
             var userForCreation = new UserForAuthenticationDTO
             {
-                Nickname = "MakkLaud",
+                UserPersonalData = "MakkLaud",
                 Password = "password"
             };
 
@@ -229,6 +229,46 @@ namespace WebReviews.Tests.Systems.Services
             var newTokens = await serviceManager.Authentication.RefreshToken(tokens);
 
             tokens.RefreshToken.Should().NotBeEquivalentTo(newTokens.RefreshToken);
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_Validate_UserData_Email()
+        {
+            var users = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var userRankGuid = new Guid("3ab56b8e-c3ae-45c3-b9cb-f1a313a61ae5");
+            var userRanks = new List<Userrank>() { new() { UserRankId = userRankGuid, Title = "Бог" } }.BuildMock().BuildMockDbSet();
+
+            var userForCreation = new UserForAuthenticationDTO
+            {
+                UserPersonalData = "Roman@mail.ru",
+                Password = "jfgkj45"
+            };
+
+            mockContext.Setup(x => x.Set<User>()).Returns(users.Object);
+            mockContext.Setup(x => x.Set<Userrank>()).Returns(userRanks.Object);
+
+            var userValid = await serviceManager.Authentication.ValidateUser(userForCreation);
+            userValid.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_Validate_UserData_Nickname()
+        {
+            var users = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var userRankGuid = new Guid("3ab56b8e-c3ae-45c3-b9cb-f1a313a61ae5");
+            var userRanks = new List<Userrank>() { new() { UserRankId = userRankGuid, Title = "Бог" } }.BuildMock().BuildMockDbSet();
+
+            var userForCreation = new UserForAuthenticationDTO
+            {
+                UserPersonalData = "roman",
+                Password = "jfgkj45"
+            };
+
+            mockContext.Setup(x => x.Set<User>()).Returns(users.Object);
+            mockContext.Setup(x => x.Set<Userrank>()).Returns(userRanks.Object);
+
+            var userValid = await serviceManager.Authentication.ValidateUser(userForCreation);
+            userValid.Should().BeTrue();
         }
     }
 }

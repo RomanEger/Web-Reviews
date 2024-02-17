@@ -25,7 +25,7 @@ namespace Repository
             .SingleOrDefaultAsync();
 
         public async Task<User> GetUserByEmailAsync(string email, bool trackChanges) =>
-            await FindByConditions(x => x.Email.ToLower() == email.ToLower(), trackChanges)
+            await FindByConditions(x => x.Email == email, trackChanges)
             .SingleOrDefaultAsync();
 
         public async Task<User> GetUserByNicknameAsync(string nickname, bool trackChanges) =>

@@ -57,7 +57,7 @@ namespace WebReviews.Tests.Systems.Controllers
 
             var userForAuthentication = new UserForAuthenticationDTO 
             { 
-                Nickname = user.Nickname ,
+                UserPersonalData = user.Nickname ,
                 Password = user.Password
             };
 

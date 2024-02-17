@@ -60,7 +60,10 @@ namespace Service
 
         public async Task<bool> ValidateUser(UserForAuthenticationDTO userForAuthentication)
         {
-            _user = await _repositoryManager.User.GetUserByNicknameAsync(userForAuthentication.Nickname, trackChanges: true);
+            _user = userForAuthentication.UserPersonalData.Contains("@")
+                ? await _repositoryManager.User.GetUserByEmailAsync(userForAuthentication.UserPersonalData, trackChanges: true)
+                : await _repositoryManager.User.GetUserByNicknameAsync(userForAuthentication.UserPersonalData, trackChanges: true);
+
             return _user is not null 
                 && PasswordHash.DecodeFrom64(_user.Password) == userForAuthentication.Password;
         }
