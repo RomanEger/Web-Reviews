@@ -10,6 +10,9 @@ namespace Contracts
     public interface IRepositoryManager
     {
         IGenericRepository<Videostatus> VideoStatuses { get; }
+        IGenericRepository<Videotype> VideoType { get; }
+        IGenericRepository<Videorestriction> VideoRestriction { get; }
+        IGenericRepository<Videogenre> VideoGenre { get; }
         IGenericRepository<Userrank> UserRank { get; }
         IUserRepository User {  get; }
         IVideoRepository Video { get; }

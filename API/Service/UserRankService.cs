@@ -18,7 +18,7 @@ namespace Service
         public UserRankService(IRepositoryManager repositoryManager, IMapper mapper, EntityChecker entityChecker)
             : base(repositoryManager, mapper)
         {
-            checkEntityAndGetIfItExist = entityChecker.GetUserRankAndCheckIfItExist;
+            checkEntityAndGetIfItExist = entityChecker.CheckUserRankAndGetIfItExist;
         }
 
         public async Task<ExtentedReferenceDTO> GetUserRankAsync(Guid userRankId, bool trackChanges) => 

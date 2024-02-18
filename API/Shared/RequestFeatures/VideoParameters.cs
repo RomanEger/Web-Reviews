@@ -12,5 +12,6 @@ namespace Shared.RequestFeatures
         public bool DateFiltering { get; set; } = false;
         public bool RatingFiltering { get; set; } = false;
         public bool AlphabetFiltering { get; set; } = false;
+        public List<Guid>? GenreIds { get; set; }
     }
 }

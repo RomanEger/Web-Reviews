@@ -11,7 +11,7 @@ namespace Service.Contracts
         IVideoStatusesService VideoStatuses { get; }
         IUserService User { get; }
         IAuthenticationService Authentication { get; }
-
+        IVideoService Video { get; }
         IUserRankService UserRank { get; }
     }
 }

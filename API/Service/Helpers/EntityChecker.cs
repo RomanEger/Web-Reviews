@@ -34,7 +34,7 @@ namespace Service.Helpers
             return GenerateNotFoundException(user, $"User with id: {userId} was not found");
         }
 
-        public async Task<User> GetUserByNicknameAndCheck(string nickname, bool trackChanges)
+        public async Task<User> CheckUserByNicknameAndGetIfItExist(string nickname, bool trackChanges)
         {
             var user = await _repositoryManager.User.GetUserByNicknameAsync(nickname, trackChanges: false);
             if (user is not null)
@@ -42,16 +42,28 @@ namespace Service.Helpers
             return user;
         }
 
-        public async Task<Userrank> GetUserRankAndCheckIfItExist(Guid userRankId, bool trackChanges)
+        public async Task<Userrank> CheckUserRankAndGetIfItExist(Guid userRankId, bool trackChanges)
         {
             var userRank = await _repositoryManager.UserRank.GetGyConditionAsync(x => x.UserRankId == userRankId, trackChanges);
             return GenerateNotFoundException(userRank, $"User rank with id: {userRankId} was not found");
         }
 
-        public async Task<Video> GetVideoAndCheckIfItExist(Guid videoId, bool trackChanges)
+        public async Task<Video> CheckVideoAndGetIfItExist(Guid videoId, bool trackChanges)
         {
             var video = await _repositoryManager.Video.GetVideoAsync(videoId, trackChanges);
             return GenerateNotFoundException(video, $"Video with id: {videoId} was not found");
+        }
+
+        public async Task<Videotype> CheckVideoTypeAndGetIfItExist(Guid videoTypeId, bool trackChanges)
+        {
+            var videoType = await _repositoryManager.VideoType.GetGyConditionAsync(x => x.VideoTypeId == videoTypeId, trackChanges);
+            return GenerateNotFoundException(videoType, $"Video type with id {videoTypeId} was not found");
+        }
+
+        public async Task<Videorestriction> CheckVideoRestrictionAndGetIfItExist(Guid videoRestrictionId, bool trackChanges)
+        {
+            var videoRestriction = await _repositoryManager.VideoRestriction.GetGyConditionAsync(x => x.VideoRestrictionId == videoRestrictionId, trackChanges);
+            return GenerateNotFoundException(videoRestriction, $"Video type with id {videoRestrictionId} was not found");
         }
 
         private TEntity GenerateNotFoundException<TEntity>(TEntity entity, string message) => 

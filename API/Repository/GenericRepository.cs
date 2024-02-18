@@ -26,9 +26,13 @@ namespace Repository
             await FindAll(trackChanges)
                 .ToListAsync();
 
+        public async Task<IEnumerable<T>> GetAllByConditionAsync(Expression<Func<T, bool>> expression, bool trackChanges) =>
+            await FindByConditions(expression, trackChanges)
+                .ToListAsync();
+
         public async Task<T> GetGyConditionAsync(Expression<Func<T, bool>> expression, bool trackChanges) =>
             await FindByConditions(expression, trackChanges)
-            .SingleOrDefaultAsync();            
+                .SingleOrDefaultAsync();            
 
         public void UpdateEntity(T entity) =>
             Update(entity);

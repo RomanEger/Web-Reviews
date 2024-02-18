@@ -51,8 +51,8 @@ namespace Service
         //Проверка на user rank id
         public async Task<UserDTO> UpdateUserAsync(Guid userId, UserForUpdateDTO userForUpdate, bool trackChanges)
         {
-            await _entityChecker.GetUserByNicknameAndCheck(userForUpdate.Nickname, trackChanges);
-            await _entityChecker.GetUserRankAndCheckIfItExist((Guid)userForUpdate.UserRankId, trackChanges: false);
+            await _entityChecker.CheckUserByNicknameAndGetIfItExist(userForUpdate.Nickname, trackChanges);
+            await _entityChecker.CheckUserRankAndGetIfItExist((Guid)userForUpdate.UserRankId, trackChanges: false);
             var user = await _entityChecker.CheckUserAndGetIfItExist(userId, trackChanges);
 
             if(userForUpdate.Password != user.Password)

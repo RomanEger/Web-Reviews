@@ -44,8 +44,8 @@ namespace Service
             if (user is not null)
                 throw new BadRequestException($"User with email {user.Email} already exist");
 
-            await _entityChecker.GetUserRankAndCheckIfItExist((Guid)userForRegistration.UserRankId, trackChanges: false);
-            await _entityChecker.GetUserByNicknameAndCheck(userForRegistration.Nickname, trackChanges: false);
+            await _entityChecker.CheckUserRankAndGetIfItExist((Guid)userForRegistration.UserRankId, trackChanges: false);
+            await _entityChecker.CheckUserByNicknameAndGetIfItExist(userForRegistration.Nickname, trackChanges: false);
 
             userForRegistration.Password = PasswordHash.EncodePasswordToBase64(userForRegistration.Password);
 
