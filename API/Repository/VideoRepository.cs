@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
@@ -30,11 +31,18 @@ namespace Repository
         public async Task<PagedList<Video>> GetVideosAsync(VideoParameters videoParameters, bool trackChanges)
         {
             var listOfVideos = await FindAll(trackChanges)
+                .GetVideosByName(videoParameters.SearchTitle)
+                .OrderByAlphabet(videoParameters.AlphabetFiltering)
+                .OrderByDateDescending(videoParameters.DateFiltering)
+                .OrderByRatingDescending(videoParameters.RatingFiltering)
                 .Skip((videoParameters.PageNumber - 1) * videoParameters.PageSize)
-                .Take(videoParameters.PageSize)
+                .Take(videoParameters.PageSize)                
                 .ToListAsync();
+
             var count = FindAll(trackChanges)
+                .GetVideosByName(videoParameters.SearchTitle)
                 .Count();
+
             return new PagedList<Video>(listOfVideos, count, videoParameters.PageNumber, videoParameters.PageSize);
         }
     }

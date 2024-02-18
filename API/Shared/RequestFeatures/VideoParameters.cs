@@ -8,6 +8,9 @@ namespace Shared.RequestFeatures
 {
     public class VideoParameters : RequestParameters
     {
-
+        public string? SearchTitle { get; set; }
+        public bool DateFiltering { get; set; } = false;
+        public bool RatingFiltering { get; set; } = false;
+        public bool AlphabetFiltering { get; set; } = false;
     }
 }

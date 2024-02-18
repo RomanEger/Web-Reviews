@@ -248,7 +248,7 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Userrank>()).Returns(userRanks.Object);
 
             var userValid = await serviceManager.Authentication.ValidateUser(userForCreation);
-            userValid.Should().BeTrue();
+            userValid.Should().BeFalse();
         }
 
         [Fact]

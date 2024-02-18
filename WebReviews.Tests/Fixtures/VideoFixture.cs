@@ -39,7 +39,7 @@ namespace WebReviews.Tests.Fixtures
                     Description = null,
                     CurrentEpisode = 24,
                     TotalEpisodes = 24,
-                    ReleaseDate = DateTime.Now,
+                    ReleaseDate = DateTime.Now.AddDays(15),
                     Photo = null,
                     Rating = (decimal?)9.2
                 },
@@ -47,14 +47,14 @@ namespace WebReviews.Tests.Fixtures
                 new()
                 {
                     VideoId = new Guid("a0f3b4a6-1b7c-4376-a215-94839db1c5fb"),
-                    Title = "Hunter x Hunter",
+                    Title = "Dunter x Hunter",
                     VideoTypeId = new Guid("40aaad63-0371-4359-b986-18eb9ee1c47b"),
                     VideoStatusId = new Guid("8f2ab181-a87e-4a90-89b2-65f6cffd3431"),
                     VideoRestrictionId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c"),
                     Description = null,
                     CurrentEpisode = 12,
                     TotalEpisodes = 24,
-                    ReleaseDate = DateTime.Now,
+                    ReleaseDate = DateTime.Now.AddDays(4),
                     Photo = null,
                     Rating = (decimal?)8.4
                 },
@@ -69,7 +69,7 @@ namespace WebReviews.Tests.Fixtures
                     Description = null,
                     CurrentEpisode = 22,
                     TotalEpisodes = 48,
-                    ReleaseDate = DateTime.Now,
+                    ReleaseDate = DateTime.Now.AddDays(10),
                     Photo = null,
                     Rating = (decimal?)9.9
                 },
