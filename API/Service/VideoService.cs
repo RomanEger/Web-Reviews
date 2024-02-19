@@ -55,16 +55,31 @@ namespace Service
 
         public async Task<(IEnumerable<VideoDTO> videos, MetaData metaData)> GetVideosAsync(VideoParameters videoParameters, bool trackChanges)
         {
-            //if(videoParameters.GenreIds is null)
-            var videoFiltertedGenre = await _repositoryManager.VideoGenre
-                .GetAllByConditionAsync(x => videoParameters.GenreIds.Count(v => v == x.GenreId) == videoParameters.GenreIds.Count, trackChanges);
-
-            videoFiltertedGenre.DistinctBy(x => x.VideoId);
-
             var videos = await _repositoryManager.Video.GetVideosAsync(videoParameters, trackChanges);
-            var sortedVideos = videos.Where(x => videoFiltertedGenre.Any(v => v.VideoId == x.VideoId));
+            if (videoParameters.GenreIds is not null)
+            {
+                // Выборка из таблицы VideoGenre с условием, что жанр должен находиться в параметрах фильтрации
+                var videoGenre = await _repositoryManager.VideoGenre
+                    .GetAllByConditionAsync(x => videoParameters.GenreIds.Contains(x.GenreId), trackChanges);
 
-            var videosToReturn = _mapper.Map<IEnumerable<VideoDTO>>(sortedVideos);
+                // Группировка по videoID для формирования нового списка в котором будет список жанров конкректного видео
+                var sortedVideoGenres = from x in videoGenre
+                           group x by x.VideoId into g
+                           select new
+                           {
+                               VideoId = g.Key,
+                               GenreIds = from genre in g select genre.GenreId
+                           };
+
+                // Фильтрации видео у которых подходят не все жанры
+                sortedVideoGenres = sortedVideoGenres.Where(x => x.GenreIds.Any(videoParameters.GenreIds.Contains)
+                                                                 && videoParameters.GenreIds.Count() == x.GenreIds.Count());
+
+                // Соединения отфильтрованных видео изначально и видео отфильтрованных по жанрам
+                videos = PagedList<Video>.ToPageList(videos.Where(x => sortedVideoGenres.Any(v => v.VideoId == x.VideoId)), videoParameters);
+            }
+
+            var videosToReturn = _mapper.Map<IEnumerable<VideoDTO>>(videos);
             return (videos: videosToReturn, metaData: videos.MetaData);
         }
 
