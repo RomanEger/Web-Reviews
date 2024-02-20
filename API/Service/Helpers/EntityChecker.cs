@@ -22,7 +22,7 @@ namespace Service.Helpers
         public async Task<Videostatus> CheckVideoStatusAndGetIfItExist(Guid entityId, bool trackChanges)
         {
             var entity = await _repositoryManager
-                .Set<Videostatus>()
+                .VideoStatuses
                 .GetGyConditionAsync(x => x.VideoStatusId == entityId, trackChanges);
 
             return GenerateNotFoundException(entity, $"Entity {typeof(Videostatus).Name} with id {entityId} not found");
