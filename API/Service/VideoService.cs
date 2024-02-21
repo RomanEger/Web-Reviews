@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Service.Contracts;
@@ -30,6 +31,13 @@ namespace Service
         public async Task<VideoDTO> CreateVideoAsync(VideoForManipulationDTO videoForManipulationDTO)
         {
             await CheckReferences(videoForManipulationDTO);
+
+            var videoForvalidation = await _repositoryManager.Video.GetVideosAsync(new VideoParameters 
+            { 
+                SearchTitle = videoForManipulationDTO.Title 
+            }, trackChanges: false);
+            if (videoForvalidation != null)
+                throw new BadRequestException($"Video with title {videoForManipulationDTO.Title} already exist");
 
             var video = _mapper.Map<Video>(videoForManipulationDTO);
             _repositoryManager.Video.CreateVideo(video);
