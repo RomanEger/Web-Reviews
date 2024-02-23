@@ -112,12 +112,10 @@ public partial class WebReviewsContext : DbContext
 
             entity.HasOne(d => d.Author).WithMany(p => p.Authorvideos)
                 .HasForeignKey(d => d.AuthorId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_author_id_authorvideo_authors");
 
             entity.HasOne(d => d.Video).WithMany(p => p.Authorvideos)
                 .HasForeignKey(d => d.VideoId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_video_id_authorvideo_video");
         });
 
@@ -168,12 +166,10 @@ public partial class WebReviewsContext : DbContext
 
             entity.HasOne(d => d.Studio).WithMany(p => p.Studiovideos)
                 .HasForeignKey(d => d.StudioId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_studio_id_studiovideo_studios");
 
             entity.HasOne(d => d.Video).WithMany(p => p.Studiovideos)
                 .HasForeignKey(d => d.VideoId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_video_id_studiovideo_video");
         });
 
@@ -234,7 +230,6 @@ public partial class WebReviewsContext : DbContext
 
             entity.HasOne(d => d.Video).WithMany(p => p.Usercomments)
                 .HasForeignKey(d => d.VideoId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_video_id_usercomments_video");
         });
 
@@ -323,7 +318,6 @@ public partial class WebReviewsContext : DbContext
 
             entity.HasOne(d => d.Video).WithMany(p => p.Videogenres)
                 .HasForeignKey(d => d.VideoId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_video_id_videogenres_video");
         });
 
@@ -344,6 +338,10 @@ public partial class WebReviewsContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_user_id_videoratings_users");
+
+            entity.HasOne(d => d.Video).WithMany(p => p.Videoratings)
+                .HasForeignKey(d => d.VideoId)
+                .HasConstraintName("fk_video_id_videoratings_videos");
         });
 
         modelBuilder.Entity<Videorestriction>(entity =>

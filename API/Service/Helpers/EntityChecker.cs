@@ -1,7 +1,6 @@
 ﻿using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
-using Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
