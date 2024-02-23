@@ -12,6 +12,7 @@ namespace Contracts
     {
         Task<PagedList<Video>> GetVideosAsync(VideoParameters videoParameters, bool trackChanges);
         Task<Video> GetVideoAsync(Guid videoId, bool trackChanges);
+        Task<Video> GetVideoByTitle(string title, bool trackChanges);
         void DeleteVideo(Video video);
         void CreateVideo(Video video);
     }

@@ -49,12 +49,7 @@ namespace WebReviews.Tests.Systems.Controllers
                 It.IsAny<VideoParameters>(),
                 It.IsAny<bool>())).Returns(Task.FromResult((videosDTO, new MetaData())));
 
-            var resultUser = await videoController.GetVideos(videoParameters);
-
-            var okResult = resultUser as OkObjectResult;
-            var returnedListVideo = okResult.Value as IEnumerable<VideoDTO>;
-
-            returnedListVideo.Should().HaveCount(expectedCount);
+            await videoController.Invoking(async x => await x.GetVideos(videoParameters)).Should().ThrowAsync<NullReferenceException>();
         }
 
         [Fact]

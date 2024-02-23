@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Presentation.Controllers
 {
     [ApiController]
-    [Route("api/token")]
+    [Route("api/tokens")]
     public class TokenController :ControllerBase
     {
         private readonly IServiceManager _serviceManager;

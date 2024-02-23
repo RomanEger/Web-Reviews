@@ -23,7 +23,6 @@ namespace Presentation.Controllers
             _serviceManager = serviceManager;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetVideoStatuses()
         {

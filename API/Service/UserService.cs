@@ -51,12 +51,13 @@ namespace Service
         //Проверка на user rank id
         public async Task<UserDTO> UpdateUserAsync(Guid userId, UserForUpdateDTO userForUpdate, bool trackChanges)
         {
-            await _entityChecker.CheckUserByNicknameAndGetIfItExist(userForUpdate.Nickname, trackChanges);
-            await _entityChecker.CheckUserRankAndGetIfItExist((Guid)userForUpdate.UserRankId, trackChanges: false);
             var user = await _entityChecker.CheckUserAndGetIfItExist(userId, trackChanges);
 
-            if(userForUpdate.Password != user.Password)
-                userForUpdate.Password = PasswordHash.EncodePasswordToBase64(userForUpdate.Password);
+            if(user.Nickname != userForUpdate.Nickname)
+                await _entityChecker.CheckUserByNicknameAndGetIfItExist(userForUpdate.Nickname, trackChanges);
+            await _entityChecker.CheckUserRankAndGetIfItExist((Guid)userForUpdate.UserRankId, trackChanges: false);
+
+            userForUpdate.Password = PasswordHash.EncodePasswordToBase64(userForUpdate.Password);
             
             _mapper.Map(userForUpdate, user);
             await _repositoryManager.SaveAsync();

@@ -28,6 +28,10 @@ namespace Repository
             await FindByConditions(x => x.VideoId == videoId, trackChanges)
             .SingleOrDefaultAsync();
 
+        public async Task<Video> GetVideoByTitle(string title, bool trackChanges) =>
+            await FindByConditions(x => x.Title.ToLower() == title.ToLower(), trackChanges)
+            .SingleOrDefaultAsync();
+
         public async Task<PagedList<Video>> GetVideosAsync(VideoParameters videoParameters, bool trackChanges)
         {
             var listOfVideos = await FindAll(trackChanges)

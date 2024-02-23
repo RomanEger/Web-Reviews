@@ -32,11 +32,8 @@ namespace Service
         {
             await CheckReferences(videoForManipulationDTO);
 
-            var videoForvalidation = await _repositoryManager.Video.GetVideosAsync(new VideoParameters 
-            { 
-                SearchTitle = videoForManipulationDTO.Title 
-            }, trackChanges: false);
-            if (videoForvalidation != null)
+            var videoForValidation = await _repositoryManager.Video.GetVideoByTitle(videoForManipulationDTO.Title, trackChanges: false);
+            if (videoForValidation != null)
                 throw new BadRequestException($"Video with title {videoForManipulationDTO.Title} already exist");
 
             var video = _mapper.Map<Video>(videoForManipulationDTO);
