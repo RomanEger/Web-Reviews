@@ -217,8 +217,18 @@ public partial class WebReviewsContext : DbContext
             entity.Property(e => e.UserCommentId)
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .HasColumnName("user_comment_id");
+            entity.Property(e => e.Advantages)
+                .HasMaxLength(800)
+                .HasColumnName("advantages");
+            entity.Property(e => e.CommentDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("comment_date");
+            entity.Property(e => e.Disadvantages)
+                .HasMaxLength(800)
+                .HasColumnName("disadvantages");
             entity.Property(e => e.Text)
-                .HasMaxLength(300)
+                .HasMaxLength(800)
                 .HasColumnName("text");
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.VideoId).HasColumnName("video_id");

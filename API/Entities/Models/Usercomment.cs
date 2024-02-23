@@ -13,6 +13,12 @@ public partial class Usercomment
 
     public Guid VideoId { get; set; }
 
+    public string? Disadvantages { get; set; }
+
+    public string? Advantages { get; set; }
+
+    public DateTime CommentDate { get; set; }
+
     public virtual User User { get; set; } = null!;
 
     public virtual Video Video { get; set; } = null!;
