@@ -10,6 +10,7 @@ namespace Contracts
     public interface IGenericRepository<T> where T : class
     {
         Task<IEnumerable<T>> GetAllAsync(bool trackChanges);
+        Task<IEnumerable<T>> GetAllByConditionAsync(Expression<Func<T, bool>> expression, bool trackChanges);
         Task<T> GetGyConditionAsync(Expression<Func<T, bool>> expression, bool trackChanges);
         void DeleteEntity(T entity);
         void CreateEntity(T entity);

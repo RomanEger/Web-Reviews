@@ -25,11 +25,11 @@ namespace Repository
             .SingleOrDefaultAsync();
 
         public async Task<User> GetUserByEmailAsync(string email, bool trackChanges) =>
-            await FindByConditions(x => x.Email == email, trackChanges)
+            await FindByConditions(x => x.Email.ToLower() == email.ToLower(), trackChanges)
             .SingleOrDefaultAsync();
 
         public async Task<User> GetUserByNicknameAsync(string nickname, bool trackChanges) =>
-            await FindByConditions(x => x.Nickname == nickname, trackChanges)
+            await FindByConditions(x => x.Nickname.ToLower() == nickname.ToLower(), trackChanges)
             .SingleOrDefaultAsync();
 
         public async Task<IEnumerable<User>> GetUsersAsync(bool trackChanges) =>

@@ -38,7 +38,7 @@ namespace WebReviews.Tests.Fixtures
                     UserId = new Guid("08feaf40-ea7f-404d-ade6-b2fb1c009403"),
                     Nickname = "Roman",
                     Email = "roman@mail.ru",
-                    Password = "jfgkj45",
+                    Password = "amZna2o0NQ==",
                     UserRankId = new Guid("4c58a463-db9b-4044-b111-f607243691ef")
                 },
                 new()

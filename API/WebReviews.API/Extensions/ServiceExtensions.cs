@@ -28,7 +28,8 @@ namespace WebReviews.API.Extensions
                 {
                     builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("Info-Pagination");
                 });
             });
 

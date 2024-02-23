@@ -105,7 +105,7 @@ namespace WebReviews.Tests.Systems.Services
             var userRanks = new List<Userrank>() { new() { UserRankId = userRankGuid, Title = "Бог" } }.BuildMock().BuildMockDbSet();
             var userForUpdate = new UserForUpdateDTO
             {
-                Nickname = "makklaud",
+                Nickname = "makklaud228",
                 Password = "password",
                 UserRankId = userRankGuid             
             };
@@ -116,7 +116,7 @@ namespace WebReviews.Tests.Systems.Services
 
             var updateUser = await serviceManager.User.UpdateUserAsync(guid, userForUpdate, trackChanges: true);
 
-            updateUser.Nickname.Should().Be("makklaud");
+            updateUser.Nickname.Should().Be("makklaud228");
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace WebReviews.Tests.Systems.Services
             var userRanks = new List<Userrank>() { new() { UserRankId = Guid.NewGuid(), Title = "Бог" } }.BuildMock().BuildMockDbSet();
             var userForUpdate = new UserForUpdateDTO
             {
-                Nickname = "makklaud",
+                Nickname = "makklaud23",
                 Password = "password",
                 UserRankId = new Guid("08feaf40-ea7f-404d-ade6-b2fb1c009403")
             };
@@ -150,7 +150,7 @@ namespace WebReviews.Tests.Systems.Services
             var userRanks = new List<Userrank>() { new() { UserRankId = userRankGuid, Title = "Бог" } }.BuildMock().BuildMockDbSet();
             var userForUpdate = new UserForUpdateDTO
             {
-                Nickname = "makklaud",
+                Nickname = "makklaud222",
                 Password = "password1",
                 UserRankId = userRankGuid
             };
@@ -160,7 +160,7 @@ namespace WebReviews.Tests.Systems.Services
 
             var updateUser = await serviceManager.User.UpdateUserAsync(guid, userForUpdate, trackChanges: true);
 
-            updateUser.Nickname.Should().Be("makklaud");
+            updateUser.Nickname.Should().Be("makklaud222");
             updateUser.Password.Should().Be("cGFzc3dvcmQx");
         }
     }

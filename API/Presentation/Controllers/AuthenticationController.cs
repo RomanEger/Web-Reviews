@@ -22,7 +22,7 @@ namespace Presentation.Controllers
             _serviceManager = serviceManager;
         }
 
-        [HttpPost]
+        [HttpPost("registration")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDTO userForRegistration)
         {
