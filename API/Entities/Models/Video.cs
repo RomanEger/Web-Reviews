@@ -40,4 +40,6 @@ public partial class Video
     public virtual Videotype VideoType { get; set; } = null!;
 
     public virtual ICollection<Videogenre> Videogenres { get; set; } = new List<Videogenre>();
+
+    public virtual ICollection<Videorating> Videoratings { get; set; } = new List<Videorating>();
 }

@@ -10,9 +10,9 @@ namespace Shared.DataTransferObjects
     public record UserForAuthenticationDTO
     {
         [Required(ErrorMessage = "Nickname field is required")]
-        public string? Nickname { get; set; }
+        public string? UserPersonalData { get; set; }
 
-        [Required(ErrorMessage = "Nickname field is required")]
+        [Required(ErrorMessage = "Password field is required")]
         public string? Password { get; set; }
     }
 }

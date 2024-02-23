@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Shared.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,6 +18,10 @@ namespace Shared.DataTransferObjects
 
         [Required(ErrorMessage = "Nickname field is required")]
         [Length(8, 20, ErrorMessage = "Password length should be between 8 and 20 chars")]
+        [ValidationLowerCase]
+        [ValidationUpperCase]
+        [ValidationNumber]
+        [SpecialSymbolValidation(ErrorMessage = "Password cant contain special symbols")]
         public string? Password { get; set; }
 
 

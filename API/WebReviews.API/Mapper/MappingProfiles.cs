@@ -20,6 +20,9 @@ namespace WebReviews.API.Mapper
             CreateMap<UserForUpdateDTO, User>().ReverseMap();
             CreateMap<User, UserDTO>();
             CreateMap<UserForRegistrationDTO, User>().ReverseMap();
+
+            CreateMap<VideoForManipulationDTO, Video>().ReverseMap();
+            CreateMap<Video, VideoDTO>();
         }
     }
 }

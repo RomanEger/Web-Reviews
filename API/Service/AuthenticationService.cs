@@ -40,12 +40,12 @@ namespace Service
 
         public async Task CreateUserAsync(UserForRegistrationDTO userForRegistration)
         {
-            var user = await _repositoryManager.User.GetUserByEmailAsync(userForRegistration.Nickname, trackChanges: false);
+            var user = await _repositoryManager.User.GetUserByEmailAsync(userForRegistration.Email, trackChanges: false);
             if (user is not null)
                 throw new BadRequestException($"User with email {user.Email} already exist");
 
-            await _entityChecker.GetUserRankAndCheckIfItExist((Guid)userForRegistration.UserRankId, trackChanges: false);
-            await _entityChecker.GetUserByNicknameAndCheck(userForRegistration.Nickname, trackChanges: false);
+            await _entityChecker.CheckUserRankAndGetIfItExist((Guid)userForRegistration.UserRankId, trackChanges: false);
+            await _entityChecker.CheckUserByNicknameAndGetIfItExist(userForRegistration.Nickname, trackChanges: false);
 
             userForRegistration.Password = PasswordHash.EncodePasswordToBase64(userForRegistration.Password);
 
@@ -60,7 +60,10 @@ namespace Service
 
         public async Task<bool> ValidateUser(UserForAuthenticationDTO userForAuthentication)
         {
-            _user = await _repositoryManager.User.GetUserByNicknameAsync(userForAuthentication.Nickname, trackChanges: true);
+            _user = userForAuthentication.UserPersonalData.Contains("@")
+                ? await _repositoryManager.User.GetUserByEmailAsync(userForAuthentication.UserPersonalData, trackChanges: true)
+                : await _repositoryManager.User.GetUserByNicknameAsync(userForAuthentication.UserPersonalData, trackChanges: true);
+
             return _user is not null 
                 && PasswordHash.DecodeFrom64(_user.Password) == userForAuthentication.Password;
         }

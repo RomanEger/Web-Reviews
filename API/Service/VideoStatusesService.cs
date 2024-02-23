@@ -2,7 +2,6 @@
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
-using Repository;
 using Service.Contracts;
 using Service.Helpers;
 using Shared.DataTransferObjects;
