@@ -22,4 +22,8 @@
     <UpToDateCheckInput Remove="Views\Home\Index.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\API\Shared\Shared.csproj" />
+  </ItemGroup>
+
 </Project>

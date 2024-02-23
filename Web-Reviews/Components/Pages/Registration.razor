@@ -1,0 +1,119 @@
+@using System.Text.Json
+@using System.Net
+@using System.Text
+@using Entities.Models
+@using Shared.DataTransferObjects
+@using Web_Reviews.Services.Contracts
+@inject ICookieService<TokenDTO, string> CookieService
+@inject IHttpClientFactory ClientFactory 
+@inject IJSRuntime JsRuntime 
+@rendermode RenderMode.InteractiveServer
+
+@page "/registration"
+<PageTitle>Registration</PageTitle>
+
+<div class="card-body d-flex flex-column align-items-center">
+    
+    <form class="text-center">
+        
+        <div class="mb-3">
+            <input type="text" class="form-control" @bind-value="_user.Nickname" placeholder="Никнейм"/>
+        </div>
+
+        <div class="mb-3">
+            <input type="text" class="form-control" @bind-value="_user.Email" placeholder="Email"/>
+        </div>
+        
+        <div class="mb-3">
+            <input type="password" class="form-control" @bind-value="_user.Password" style="@Style" placeholder="Пароль"/>
+        </div>
+
+        <div class="mb-3">
+            <input type="password" class="form-control" @bind-value="_secondPassword" style="@Style" placeholder="Подтвердите пароль"/>
+        </div>
+
+        <div class="mb-3">
+            <button class="btn btn-primary d-block w-100" @onclick="Register">Зарегистрироваться</button>
+        </div>
+        
+    </form>
+</div>
+
+@code {
+
+    HttpContext context = new DefaultHttpContext();
+
+    [Parameter] 
+    public string Style { get; set; }
+
+    TokenDTO _tokenDto;
+    
+    string ErrorStyle { get; } = "background-color: red";
+    
+    string DefaultStyle { get; } = "";
+    
+    UserForRegistrationDTO _user = new();
+    
+    string _secondPassword = string.Empty;
+
+    CookieOptions _cookieOptions = new();
+
+    string accessToken;
+    string key = "AccessToken";
+    async Task Register()
+    {
+        if (_user.Password != _secondPassword)
+        {
+            Style = ErrorStyle;
+            return;
+        }
+        
+        Style = DefaultStyle;
+        
+        var httpClient = ClientFactory.CreateClient();
+        try
+        {
+            const string defaultRank = "дефолт";
+            
+            var responseRanks = await httpClient.GetAsync("https://localhost:7062/api/userranks");
+            
+            var r = await responseRanks.Content.ReadAsStringAsync();
+            var sbR = new StringBuilder(r);
+            sbR.Replace("title", "Title");
+            sbR.Replace("id", "UserRankId");
+            var userRanks = JsonSerializer.Deserialize<List<Userrank>>(sbR.ToString()) ?? new List<Userrank>();
+            
+            _user.UserRankId = userRanks.Where(x => x.Title == defaultRank).Select(x => x.UserRankId).FirstOrDefault();
+            
+            var response = await httpClient.PostAsJsonAsync("https://localhost:7062/api/authentication", _user);
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                var userForAuth = new UserForAuthenticationDTO()
+                {
+                    Nickname = _user.Nickname,
+                    Password = _user.Password
+                };
+                var responseForAuth = await httpClient.PostAsJsonAsync("https://localhost:7062/api/authentication/login", userForAuth);
+
+                var result = await responseForAuth.Content.ReadAsStringAsync();
+                
+                StringBuilder sbResult = new StringBuilder(result);
+                
+                sbResult.Replace("accessToken", "AccessToken");
+                
+                sbResult.Replace("refreshToken", "RefreshToken");
+                
+                _tokenDto = JsonSerializer.Deserialize<TokenDTO>(sbResult.ToString()) ?? new TokenDTO("", "");
+                
+                await CookieService.AppendCookieAsync(_tokenDto);
+                accessToken = await CookieService.Get(key);
+            }
+        }
+        catch(Exception ex)
+        {
+            await JsRuntime.InvokeAsync<string>("alert", ex.Message);
+        }
+    }
+
+}
