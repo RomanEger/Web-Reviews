@@ -31,7 +31,7 @@ namespace WebReviews.Tests.Fixtures
                     Advantages = "None",
                     Disadvantages = "None",
                     CommentDate = DateTime.Now,
-                    UserId = new Guid("a77fc8c4-254d-4a1e-91a6-cc2084c50149"),
+                    UserId = new Guid("6d395f54-d2ab-4f39-aa0e-cce27734b8ec"),
                     VideoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c")
                 },
 
@@ -42,7 +42,7 @@ namespace WebReviews.Tests.Fixtures
                     Advantages = "Trash",
                     Disadvantages = "cool",
                     CommentDate = DateTime.Now.AddDays(2),
-                    UserId = new Guid("3160ba6b-2b8b-46fd-a77c-12955cd79b49"),
+                    UserId = new Guid("6d395f54-d2ab-4f39-aa0e-cce27734b8ec"),
                     VideoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c")
                 },
 

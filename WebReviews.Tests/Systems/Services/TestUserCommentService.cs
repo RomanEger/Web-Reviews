@@ -32,6 +32,7 @@ namespace WebReviews.Tests.Systems.Services
         private IServiceManager serviceManager;
         private VideoFixture videoFixture;
         private CommentsFixture commentsFixture;
+        private UserFixture userFixture;
 
         public TestUserCommentService()
         {
@@ -48,6 +49,7 @@ namespace WebReviews.Tests.Systems.Services
             serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
             videoFixture = new VideoFixture();
             commentsFixture = new CommentsFixture();
+            userFixture = new UserFixture();
         }
 
         [Fact]
@@ -103,12 +105,14 @@ namespace WebReviews.Tests.Systems.Services
             var videoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c");
             var videoToReturn = videoFixture.GetTestData().BuildMock().BuildMockDbSet();
             var userCommentsToReturn = commentsFixture.GetTestData().BuildMock().BuildMockDbSet();
+            var usersToReturn = userFixture.GetTestData().BuildMock().BuildMockDbSet();
 
             var userCommentForManipulation = autoMapper.Map<UserCommentForManipulationDTO>(userCommentsToReturn.Object.First());
 
             mockContext.Setup(x => x.Set<Video>()).Returns(videoToReturn.Object);
             mockContext.Setup(x => x.Set<Usercomment>()).Returns(userCommentsToReturn.Object);
             mockContext.Setup(x => x.Set<Usercomment>().Add(It.IsAny<Usercomment>())).Callback(() => created = true);
+            mockContext.Setup(x => x.Set<User>()).Returns(usersToReturn.Object);
 
             var result = await serviceManager.UserComment.CreateUserCommentAsync(videoId, userCommentForManipulation);
             result.Should().NotBeNull();
@@ -139,11 +143,13 @@ namespace WebReviews.Tests.Systems.Services
             var videoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c");
             var videoToReturn = videoFixture.GetTestData().BuildMock().BuildMockDbSet();
             var userCommentsToReturn = commentsFixture.GetTestData().BuildMock().BuildMockDbSet();
+            var usersToReturn = userFixture.GetTestData().BuildMock().BuildMockDbSet();
 
             var userCommentForManipulation = autoMapper.Map<UserCommentForManipulationDTO>(userCommentsToReturn.Object.First());
 
             mockContext.Setup(x => x.Set<Video>()).Returns(videoToReturn.Object);
             mockContext.Setup(x => x.Set<Usercomment>()).Returns(userCommentsToReturn.Object);
+            mockContext.Setup(x => x.Set<User>()).Returns(usersToReturn.Object);
 
             var result = await serviceManager.UserComment.UpdateUserCommentAsync(videoId, commentId, userCommentForManipulation, trackChanges: true);
             result.Should().NotBeNull();

@@ -16,9 +16,6 @@ namespace Shared.DataTransferObjects
         [Required(ErrorMessage = "User id поле обязательно")]
         public Guid UserId { get; init; }
 
-        [Required(ErrorMessage = "Video id поле обязательно")]
-        public Guid VideoId { get; init; }
-
         [Length(minimumLength: 10, maximumLength: 1000, ErrorMessage = "Содержание недостатков должно быть между 10 и 1000 символами")]
         public string? Disadvantages { get; init; }
 

@@ -29,7 +29,10 @@ namespace Service
         public async Task<UserCommentDTO> CreateUserCommentAsync(Guid videoId, UserCommentForManipulationDTO commentForManipulation)
         {
             await _entityChecker.CheckVideoAndGetIfItExist(videoId, trackChanges: false);
+            await _entityChecker.CheckUserAndGetIfItExist(commentForManipulation.UserId, trackChanges: false);
             var userComment = _mapper.Map<Usercomment>(commentForManipulation);
+
+            userComment.VideoId = videoId;
             _repositoryManager.UserComments.CreateUserComment(userComment);
             await _repositoryManager.SaveAsync();
 
@@ -68,6 +71,7 @@ namespace Service
         public async Task<UserCommentDTO> UpdateUserCommentAsync(Guid videoId, Guid commentId, UserCommentForManipulationDTO commentForManipulation, bool trackChanges)
         {
             await _entityChecker.CheckVideoAndGetIfItExist(videoId, trackChanges: false);
+            await _entityChecker.CheckUserAndGetIfItExist(commentForManipulation.UserId, trackChanges: false);
             var userComment = await _entityChecker.CheckUserCommentAndGetIfItExist(videoId, commentId, trackChanges);
 
             _mapper.Map(commentForManipulation, userComment);
