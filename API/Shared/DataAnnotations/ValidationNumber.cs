@@ -9,6 +9,7 @@ namespace Shared.DataAnnotations
 {
     public class ValidationNumber : ValidationAttribute
     {
+        public string FieldName { get; set; } = "Поле";
         private bool ValidationNumberChar(string value) =>
            value.Any(x => char.IsDigit(x));
 
@@ -19,7 +20,7 @@ namespace Shared.DataAnnotations
 
             return ValidationNumberChar(value.ToString())
                 ? ValidationResult.Success
-                : new ValidationResult("Field has to contain number");
+                : new ValidationResult($"{FieldName} должен содержать цифру");
         }
     }
 }

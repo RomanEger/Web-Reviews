@@ -9,11 +9,11 @@ namespace Shared.DataTransferObjects
 {
     public record ExtentedReferenceForManipDTO
     {
-        [Required(ErrorMessage = "Field title is required")]
+        [Required(ErrorMessage = "Title поле обязательно")]
         [Length(minimumLength: 1, maximumLength: 30, ErrorMessage = "Title length could be between 1 and 30 chars")]
         public string? title { get; init; }
 
-        [Required(ErrorMessage = "Field description is required")]
+        [Required(ErrorMessage = "Description поле обязательно")]
         [Length(minimumLength: 1, maximumLength: 100, ErrorMessage = "Description length could be between 1 and 100 chars")]
         public string? description { get; init; }
     }

@@ -27,7 +27,7 @@ namespace Service
         public async Task<TentityToReturn> CreateAsync<TentityToChange, TentityToReturn>(TentityToChange entity)
         {
             if (entity is null)
-                throw new BadRequestException($"This entity {typeof(TentityToChange).Name} is incorrect");
+                throw new BadRequestException($"Сущность {typeof(TentityToChange).Name} пустая");
 
             var mapEntity = _mapper.Map<T>(entity);
             
