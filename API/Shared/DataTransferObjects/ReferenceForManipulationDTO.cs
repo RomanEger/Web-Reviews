@@ -9,8 +9,8 @@ namespace Shared.DataTransferObjects
 {
     public record ReferenceForManipulationDTO
     {
-        [Required(ErrorMessage="Field title is required")]
-        [Length(minimumLength: 1, maximumLength: 50, ErrorMessage ="Title length could be between 1 and 50 chars")]
+        [Required(ErrorMessage= "Title поле обязательно")]
+        [Length(minimumLength: 1, maximumLength: 50, ErrorMessage ="Title длина должна быть между 1 и 50")]
         public string? title {  get; init; }
     }
 }
