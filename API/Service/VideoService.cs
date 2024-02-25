@@ -34,7 +34,7 @@ namespace Service
 
             var videoForValidation = await _repositoryManager.Video.GetVideoByTitle(videoForManipulationDTO.Title, trackChanges: false);
             if (videoForValidation != null)
-                throw new BadRequestException($"Video with title {videoForManipulationDTO.Title} already exist");
+                throw new BadRequestException($"Video с названием {videoForManipulationDTO.Title} уже существует");
 
             var video = _mapper.Map<Video>(videoForManipulationDTO);
             _repositoryManager.Video.CreateVideo(video);

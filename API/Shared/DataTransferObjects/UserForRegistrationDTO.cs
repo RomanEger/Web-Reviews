@@ -10,26 +10,25 @@ namespace Shared.DataTransferObjects
 {
     public record UserForRegistrationDTO
     {
-        [Required(ErrorMessage ="Nickname field is required")]
-        [Length(4, 25,ErrorMessage ="Nickname length should be between 4 and 25 chars")]
-        [SpecialSymbolValidation(ErrorMessage = "Nickname cant contain special symbols")]
-        public string? Nickname { get; set; }
+        [Required(ErrorMessage = "Никнейм поле обязательно")]
+        [Length(4, 25,ErrorMessage ="Длина ника должна быть между 4 и 25 символами")]
+        [SpecialSymbolValidation(ErrorMessage = "Никнейм не может содержать специальных символов")]
+        public string? Nickname { get; init; }
 
-        [Required(ErrorMessage = "Email field is required")]
-        [MaxLength(30, ErrorMessage ="Email should be less than 30 chars")]
+        [Required(ErrorMessage = "Email поле обязательно")]
+        [MaxLength(30, ErrorMessage ="Email должен быть меньше 30 символов")]
         [EmailAddress]
-        public string? Email { get; set; }
+        public string? Email { get; init; }
 
-        [Required(ErrorMessage = "Nickname field is required")]
-        [Length(8, 20, ErrorMessage = "Password length should be between 8 and 20 chars")]
-        //[PasswordValidation]
-        [ValidationLowerCase]
-        [ValidationUpperCase]
-        [ValidationNumber]
-        [SpecialSymbolValidation(ErrorMessage = "Password cant contain special symbols")]
+        [Required(ErrorMessage = "Пароль обязательное поле")]
+        [Length(8, 20, ErrorMessage = "Длина пароля должна быть между 8 и 25 символами")]
+        [ValidationLowerCase(FieldName = "Пароль")]
+        [ValidationUpperCase(FieldName = "Пароль")]
+        [ValidationNumber(FieldName = "Пароль")]
+        [SpecialSymbolValidation(ErrorMessage = "Пароль не может содержать специальных символов")]
         public string? Password { get; set; }
 
-        [Required(ErrorMessage = "UserRankId field is required")]
-        public Guid? UserRankId { get; set; }
+        [Required(ErrorMessage = "UserRankId поле обязательно")]
+        public Guid? UserRankId { get; init; }
     }
 }

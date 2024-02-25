@@ -42,7 +42,7 @@ namespace Service
         {
             var user = await _repositoryManager.User.GetUserByEmailAsync(userForRegistration.Email, trackChanges: false);
             if (user is not null)
-                throw new BadRequestException($"User with email {user.Email} already exist");
+                throw new BadRequestException($"Пользователь с email {user.Email} уже есть");
 
             await _entityChecker.CheckUserRankAndGetIfItExist((Guid)userForRegistration.UserRankId, trackChanges: false);
             await _entityChecker.CheckUserByNicknameAndGetIfItExist(userForRegistration.Nickname, trackChanges: false);
@@ -146,7 +146,7 @@ namespace Service
 
             if (jwtSecurityToken == null
                 || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Invalid access token");
+                throw new SecurityTokenException("Неправильный access token");
             return principial;
         }
 
@@ -159,7 +159,7 @@ namespace Service
                 || user.RefreshToken != tokenDTO.RefreshToken
                 || user.RefreshTokenExpires <= DateTime.Now)
             {
-                throw new BadRequestException("Refresh token was expired or invalid");
+                throw new BadRequestException("Refresh token истек или неправильный");
             }
             _user = user;
             return await CreateToken(populateExp: false);

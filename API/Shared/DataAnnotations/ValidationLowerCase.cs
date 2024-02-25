@@ -9,6 +9,7 @@ namespace Shared.DataAnnotations
 {
     public class ValidationLowerCase : ValidationAttribute
     {
+        public string FieldName { get; set; } = "Поле";
         private bool ValidationLowerLetter(string value) =>
            value.Any(x => char.IsLower(x));
 
@@ -19,7 +20,7 @@ namespace Shared.DataAnnotations
 
             return ValidationLowerLetter(value.ToString())
                 ? ValidationResult.Success
-                : new ValidationResult("Field has to contain lower case letter");
+                : new ValidationResult($"{FieldName} должен содержать буквы в нижнем регистре");
         }
     }
 }

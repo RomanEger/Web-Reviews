@@ -9,6 +9,7 @@ namespace Shared.DataAnnotations
 {
     public class ValidationUpperCase : ValidationAttribute
     {
+        public string FieldName { get; set; } = "Поле";
         private bool ValidationUpperLetter(string value) =>
             value.Any(x => char.IsUpper(x));
 
@@ -19,7 +20,7 @@ namespace Shared.DataAnnotations
 
             return ValidationUpperLetter(value.ToString())
                 ? ValidationResult.Success
-                : new ValidationResult("Field has to contain upper case letter");
+                : new ValidationResult($"{FieldName} должен содержать букву в верхнем регистре");
         }
     }
 }
