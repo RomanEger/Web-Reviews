@@ -65,6 +65,12 @@ namespace Service.Helpers
             return GenerateNotFoundException(videoRestriction, $"Video с id {videoRestrictionId} не найдено");
         }
 
+        public async Task<Usercomment> CheckUserCommentAndGetIfItExist(Guid videoId,Guid userCommentId, bool trackChanges)
+        {
+            var userComment = await _repositoryManager.UserComments.GetUserCommentByIdAsync(videoId, userCommentId, trackChanges);
+            return GenerateNotFoundException(userComment, $"User comment с id {userCommentId} не найден");
+        }
+
         private TEntity GenerateNotFoundException<TEntity>(TEntity entity, string message) => 
             entity is null
             ? throw new NotFoundException(message)

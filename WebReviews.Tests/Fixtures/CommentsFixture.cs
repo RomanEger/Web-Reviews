@@ -32,7 +32,7 @@ namespace WebReviews.Tests.Fixtures
                     Disadvantages = "None",
                     CommentDate = DateTime.Now,
                     UserId = new Guid("a77fc8c4-254d-4a1e-91a6-cc2084c50149"),
-                    VideoId = new Guid("d116212f-9df2-480f-b1a1-05dd41118733")
+                    VideoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c")
                 },
 
                 new()
@@ -43,7 +43,7 @@ namespace WebReviews.Tests.Fixtures
                     Disadvantages = "cool",
                     CommentDate = DateTime.Now.AddDays(2),
                     UserId = new Guid("3160ba6b-2b8b-46fd-a77c-12955cd79b49"),
-                    VideoId = new Guid("d116212f-9df2-480f-b1a1-05dd41118733")
+                    VideoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c")
                 },
 
                 new()
@@ -54,7 +54,7 @@ namespace WebReviews.Tests.Fixtures
                     Disadvantages = "Bad characters",
                     CommentDate = DateTime.Now,
                     UserId = new Guid("a77fc8c4-254d-4a1e-91a6-cc2084c50149"),
-                    VideoId = new Guid("1d8103ed-773c-4585-b326-1bcc367c3bae")
+                    VideoId = new Guid("a0f3b4a6-1b7c-4376-a215-94839db1c5fb")
                 }
             };
     }

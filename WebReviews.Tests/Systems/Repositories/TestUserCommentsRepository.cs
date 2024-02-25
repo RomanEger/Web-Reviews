@@ -32,7 +32,7 @@ namespace WebReviews.Tests.Systems.Repositories
         {
             var expectedCount = 2;
             var userComments = fixture.GetTestData().BuildMock().BuildMockDbSet();
-            var videoId = new Guid("d116212f-9df2-480f-b1a1-05dd41118733");
+            var videoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c");
             var userCommentsParameters = new UserCommentsParameters();
 
             mockContext.Setup(x => x.Set<Usercomment>()).Returns(userComments.Object);
@@ -48,7 +48,7 @@ namespace WebReviews.Tests.Systems.Repositories
         {
             var expectedCount = 2;
             var userComments = fixture.GetTestData().BuildMock().BuildMockDbSet();
-            var videoId = new Guid("d116212f-9df2-480f-b1a1-05dd41118733");
+            var videoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c");
             var userCommentsParameters = new UserCommentsParameters() { DateFiltering = true};
 
             mockContext.Setup(x => x.Set<Usercomment>()).Returns(userComments.Object);
@@ -64,7 +64,7 @@ namespace WebReviews.Tests.Systems.Repositories
         public async Task Get_OnSuccess_ReturnedUserComment_WithId()
         {
             var userComments = fixture.GetTestData().BuildMock().BuildMockDbSet();
-            var videoId = new Guid("d116212f-9df2-480f-b1a1-05dd41118733");
+            var videoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c");
             var commentId = new Guid("31bad2cd-024a-4448-a5a8-4df61e37be10");
 
             mockContext.Setup(x => x.Set<Usercomment>()).Returns(userComments.Object);
