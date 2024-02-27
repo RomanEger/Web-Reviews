@@ -270,5 +270,42 @@ namespace WebReviews.Tests.Systems.Services
             var userValid = await serviceManager.Authentication.ValidateUser(userForCreation);
             userValid.Should().BeTrue();
         }
+
+        [Fact]
+        public async Task Get_OnSuccess_UserByAccessToken()
+        {
+            var users = fixture.GetTestData().BuildMock().BuildMockDbSet();
+            var userRankGuid = new Guid("3ab56b8e-c3ae-45c3-b9cb-f1a313a61ae5");
+            var userRanks = new List<Userrank>() { new() { UserRankId = userRankGuid, Title = "Бог" } }.BuildMock().BuildMockDbSet();
+
+            var userForCreation = new UserForAuthenticationDTO
+            {
+                UserPersonalData = "MakkLaud",
+                Password = "password"
+            };
+
+            mockContext.Setup(x => x.Set<User>()).Returns(users.Object);
+            mockContext.Setup(x => x.Set<Userrank>()).Returns(userRanks.Object);
+
+            var options = Options.Create(new JwtConfiguration
+            {
+                ValidIssuer = "IRateAPI",
+                ValidAudience = "IRateHttps",
+                Expires = "5",
+                RefreshTokenExpiresDays = "3",
+                SecretKey = "Secret key which we need to change, mb put in environment"
+            });
+
+            var serviceManager = new ServiceManager(repositoryManager, autoMapper, entityChecker, options);
+            await serviceManager.Authentication.ValidateUser(userForCreation);
+
+            var tokens = await serviceManager.Authentication.CreateToken(populateExp: true);
+
+            tokens.Should().NotBeNull();
+
+            var user = await serviceManager.Authentication.GetUserByTokenAsync(tokens);
+
+            user.Nickname.Should().BeEquivalentTo(userForCreation.UserPersonalData);
+        }
     }
 }

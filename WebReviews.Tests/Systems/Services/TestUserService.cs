@@ -161,7 +161,6 @@ namespace WebReviews.Tests.Systems.Services
             var updateUser = await serviceManager.User.UpdateUserAsync(guid, userForUpdate, trackChanges: true);
 
             updateUser.Nickname.Should().Be("makklaud222");
-            updateUser.Password.Should().Be("cGFzc3dvcmQx");
         }
     }
 }

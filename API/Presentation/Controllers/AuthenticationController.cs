@@ -40,5 +40,12 @@ namespace Presentation.Controllers
             var tokens = await _serviceManager.Authentication.CreateToken(populateExp: true);
             return Ok(tokens);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserByAccessToken([FromBody] TokenDTO tokenDTO)
+        {
+            var user = await _serviceManager.Authentication.GetUserByTokenAsync(tokenDTO);
+            return Ok(user);
+        }
     }
 }

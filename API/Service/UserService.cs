@@ -54,7 +54,7 @@ namespace Service
             var user = await _entityChecker.CheckUserAndGetIfItExist(userId, trackChanges);
 
             if(user.Nickname != userForUpdate.Nickname)
-                await _entityChecker.CheckUserByNicknameAndGetIfItExist(userForUpdate.Nickname, trackChanges);
+                await _entityChecker.CheckUserNicknameIfItExist(userForUpdate.Nickname, trackChanges);
             await _entityChecker.CheckUserRankAndGetIfItExist((Guid)userForUpdate.UserRankId, trackChanges: false);
 
             userForUpdate.Password = PasswordHash.EncodePasswordToBase64(userForUpdate.Password);
