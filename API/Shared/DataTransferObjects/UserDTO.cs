@@ -15,8 +15,6 @@ namespace Shared.DataTransferObjects
 
         public string Email { get; init; } 
 
-        public string Password { get; init; } 
-
         public Guid UserRankId { get; init; }
 
         public byte[]? Photo { get; init; }

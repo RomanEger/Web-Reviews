@@ -45,7 +45,7 @@ namespace Service
                 throw new BadRequestException($"Пользователь с email {user.Email} уже есть");
 
             await _entityChecker.CheckUserRankAndGetIfItExist((Guid)userForRegistration.UserRankId, trackChanges: false);
-            await _entityChecker.CheckUserByNicknameAndGetIfItExist(userForRegistration.Nickname, trackChanges: false);
+            await _entityChecker.CheckUserNicknameIfItExist(userForRegistration.Nickname, trackChanges: false);
 
             userForRegistration.Password = PasswordHash.EncodePasswordToBase64(userForRegistration.Password);
 
@@ -163,6 +163,17 @@ namespace Service
             }
             _user = user;
             return await CreateToken(populateExp: false);
+        }
+
+        public async Task<UserDTO> GetUserByTokenAsync(TokenDTO tokenDTO)
+        {
+            var principials = GetClaimsPrincipialFromExpairedToken(tokenDTO.AccessToken);
+            var user = await _repositoryManager.User.GetUserByNicknameAsync(principials.Identity.Name, trackChanges: false);
+            if (user is null)
+                throw new NotFoundException($"User с ником: {principials.Identity.Name} не найден");
+
+            var userToReturn = _mapper.Map<UserDTO>(user);
+            return userToReturn;
         }
     }
 }

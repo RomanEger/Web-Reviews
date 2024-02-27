@@ -33,12 +33,11 @@ namespace Service.Helpers
             return GenerateNotFoundException(user, $"User с id: {userId} не найден");
         }
 
-        public async Task<User> CheckUserByNicknameAndGetIfItExist(string nickname, bool trackChanges)
+        public async Task CheckUserNicknameIfItExist(string nickname, bool trackChanges)
         {
             var user = await _repositoryManager.User.GetUserByNicknameAsync(nickname, trackChanges: false);
             if (user is not null)
                 throw new BadRequestException($"Пользователь с nickname {user.Nickname} уже есть");
-            return user;
         }
 
         public async Task<Userrank> CheckUserRankAndGetIfItExist(Guid userRankId, bool trackChanges)
