@@ -20,6 +20,7 @@ namespace Repository
         private readonly Lazy<IUserRepository> _userRepository;
         private readonly Lazy<IVideoRepository> _videoRepository;
         private readonly Lazy<IUserCommentsRepository> _userCommentsRepository;
+        private readonly Lazy<IVideoRatingRepository>  _videoRatingRepository;
 
         public RepositoryManager(WebReviewsContext webReviewsContext)
         {
@@ -32,6 +33,7 @@ namespace Repository
             _userRepository = new Lazy<IUserRepository>(() => new UserRepository(webReviewsContext));
             _videoRepository = new Lazy<IVideoRepository>(() => new VideoRepository(webReviewsContext));
             _userCommentsRepository = new Lazy<IUserCommentsRepository>(() => new UserCommentsRepository(webReviewsContext));
+            _videoRatingRepository = new Lazy<IVideoRatingRepository>(() => new VideoRatingRepository(webReviewsContext));
         }
 
         public IGenericRepository<Videostatus> VideoStatuses => _videoStatusesRepository.Value;
@@ -49,6 +51,8 @@ namespace Repository
         public IGenericRepository<Videogenre> VideoGenre => _videoGenreRepository.Value;
 
         public IUserCommentsRepository UserComments => _userCommentsRepository.Value;
+
+        public IVideoRatingRepository VideoRating => _videoRatingRepository.Value;
 
         public async Task SaveAsync() =>        
             await _webReviewsContext.SaveChangesAsync();

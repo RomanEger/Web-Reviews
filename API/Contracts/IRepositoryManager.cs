@@ -17,6 +17,7 @@ namespace Contracts
         IUserRepository User {  get; }
         IVideoRepository Video { get; }
         IUserCommentsRepository UserComments { get; }
+        IVideoRatingRepository VideoRating { get; }
         Task SaveAsync();
         IGenericRepository<T> Set<T>() where T : class;
     }
