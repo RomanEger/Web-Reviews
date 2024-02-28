@@ -28,15 +28,23 @@ namespace Presentation.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateOrUpdateVideoRating([FromBody] VideoRatingForManipulationDTO ratingForManipulation)
         {
-            var video = await _serviceManager.VideoRating.CreateOrUpdateVideoRating(ratingForManipulation, trackChanges: true);
+            var video = await _serviceManager.VideoRating.CreateOrUpdateVideoRatingAsync(ratingForManipulation, trackChanges: true);
             return Ok(video);
         }
         
         [HttpGet("{videoId}")]
         public async Task<IActionResult> RefreshVideoRating(Guid videoId)
         {
-            var video = await _serviceManager.VideoRating.RefreshVideoRating(videoId, trackChanges: true);
+            var video = await _serviceManager.VideoRating.RefreshVideoRatingAsync(videoId, trackChanges: true);
             return Ok(video);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetUserVideoRating([FromQuery] Guid videoId, Guid userId)
+        {
+            var videoRating = await _serviceManager.VideoRating.GetUserVideoRatingAsync(videoId, userId, trackChanges: false);
+            return Ok(videoRating);
         }
     }
 }

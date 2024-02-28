@@ -26,14 +26,11 @@ namespace Service
             _entityChecker = entityChecker;
         }
 
-        public async Task<VideoDTO> CreateOrUpdateVideoRating(VideoRatingForManipulationDTO ratingForManipulationDTO, bool trackChanges)
+        public async Task<VideoDTO> CreateOrUpdateVideoRatingAsync(VideoRatingForManipulationDTO ratingForManipulationDTO, bool trackChanges)
         {
-            await _entityChecker.CheckUserAndGetIfItExist(ratingForManipulationDTO.UserId, trackChanges: false);
-            await _entityChecker.CheckVideoAndGetIfItExist(ratingForManipulationDTO.VideoId, trackChanges: false);
-
-            var videoRating = await _repositoryManager.VideoRating.GetVideoRatingAsync(ratingForManipulationDTO.VideoId,
-                                                                                       ratingForManipulationDTO.UserId,
-                                                                                       trackChanges);
+            var videoRating = await CheckDependenciesAndGetVideoRating(ratingForManipulationDTO.VideoId,
+                                                                       ratingForManipulationDTO.UserId,
+                                                                       trackChanges: false);
             if (videoRating is null)
             {
                 videoRating = _mapper.Map<Videorating>(ratingForManipulationDTO);
@@ -44,10 +41,25 @@ namespace Service
 
             await _repositoryManager.SaveAsync();
 
-            return await RefreshVideoRating(ratingForManipulationDTO.VideoId, trackChanges);
+            return await RefreshVideoRatingAsync(ratingForManipulationDTO.VideoId, trackChanges);
         }
 
-        public async Task<VideoDTO> RefreshVideoRating(Guid videoId, bool trackChanges)
+        private async Task<Videorating?> CheckDependenciesAndGetVideoRating(Guid videoId, Guid userId, bool trackChanges)
+        {
+            await _entityChecker.CheckUserAndGetIfItExist(userId, trackChanges: false);
+            await _entityChecker.CheckVideoAndGetIfItExist(videoId, trackChanges: false);
+
+            return await _repositoryManager.VideoRating.GetVideoRatingAsync(videoId, userId ,trackChanges);
+        }
+
+        public async Task<VideoRatingDTO> GetUserVideoRatingAsync(Guid videoId, Guid userId, bool trackChanges)
+        {
+            var videoRating = await CheckDependenciesAndGetVideoRating(videoId, userId, trackChanges);
+            var videoRatingDTO = _mapper.Map<VideoRatingDTO>(videoRating);
+            return videoRatingDTO;
+        }
+
+        public async Task<VideoDTO> RefreshVideoRatingAsync(Guid videoId, bool trackChanges)
         {
             var video = await _entityChecker.CheckVideoAndGetIfItExist(videoId, trackChanges);
             var videoRatings = await _repositoryManager.VideoRating.GetVideoRatingsAsync(video.VideoId, trackChanges: false);

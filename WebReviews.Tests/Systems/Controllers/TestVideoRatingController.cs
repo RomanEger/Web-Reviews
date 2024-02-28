@@ -47,7 +47,7 @@ namespace WebReviews.Tests.Systems.Controllers
             var videoRatingForManipulation = mapper.Map<VideoRatingForManipulationDTO>(videoRating);
             var videoDTO = mapper.Map<VideoDTO>(video);
 
-            mockServiceManager.Setup(x => x.VideoRating.CreateOrUpdateVideoRating(videoRatingForManipulation, true))
+            mockServiceManager.Setup(x => x.VideoRating.CreateOrUpdateVideoRatingAsync(videoRatingForManipulation, true))
                 .Returns(Task.FromResult(videoDTO));
 
             var result = await videoRatingController.CreateOrUpdateVideoRating(videoRatingForManipulation);
@@ -66,7 +66,7 @@ namespace WebReviews.Tests.Systems.Controllers
             var videoRatingForManipulation = mapper.Map<VideoRatingForManipulationDTO>(videoRating);
             var videoDTO = mapper.Map<VideoDTO>(video);
 
-            mockServiceManager.Setup(x => x.VideoRating.RefreshVideoRating(videoDTO.VideoId, true))
+            mockServiceManager.Setup(x => x.VideoRating.RefreshVideoRatingAsync(videoDTO.VideoId, true))
                 .Returns(Task.FromResult(videoDTO));
 
             var result = await videoRatingController.RefreshVideoRating(videoDTO.VideoId);

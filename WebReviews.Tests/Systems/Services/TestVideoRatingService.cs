@@ -68,7 +68,7 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Video>()).Returns(videosToReturn.Object);
             mockContext.Setup(x => x.Set<Videorating>().Add(It.IsAny<Videorating>())).Callback(() => created = true);
 
-            var result = await serviceManager.VideoRating.CreateOrUpdateVideoRating(videoRatingForManipulation, trackChanges: true);
+            var result = await serviceManager.VideoRating.CreateOrUpdateVideoRatingAsync(videoRatingForManipulation, trackChanges: true);
 
             created.Should().BeTrue();
         }
@@ -90,7 +90,7 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Video>()).Returns(videosToReturn.Object);
             mockContext.Setup(x => x.Set<Videorating>().Add(It.IsAny<Videorating>())).Callback(() => created = true);
 
-            var result = await serviceManager.VideoRating.CreateOrUpdateVideoRating(videoRatingForManipulation, trackChanges: true);
+            var result = await serviceManager.VideoRating.CreateOrUpdateVideoRatingAsync(videoRatingForManipulation, trackChanges: true);
 
             created.Should().BeFalse();
         }
@@ -105,9 +105,29 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Videorating>()).Returns(videoRatingsToReturn.Object);
             mockContext.Setup(x => x.Set<Video>()).Returns(videosToReturn.Object);
 
-            var result = await serviceManager.VideoRating.RefreshVideoRating(videoRating.VideoId, trackChanges: true);
+            var result = await serviceManager.VideoRating.RefreshVideoRatingAsync(videoRating.VideoId, trackChanges: true);
 
             result.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task Get_OnSuccess_VideoRatingDTO()
+        {
+            var videoRating = videoRatingFixture.GetTestData().First();
+            var videoRatingsToReturn = videoRatingFixture.GetTestData().BuildMock().BuildMockDbSet();
+            var usersToReturn = userFixture.GetTestData().BuildMock().BuildMockDbSet();
+            var videosToReturn = videoFixture.GetTestData().BuildMock().BuildMockDbSet();
+            var videoRatingDTO = autoMapper.Map<VideoRatingDTO>(videoRating);
+
+            mockContext.Setup(x => x.Set<Videorating>()).Returns(videoRatingsToReturn.Object);
+            mockContext.Setup(x => x.Set<User>()).Returns(usersToReturn.Object);
+            mockContext.Setup(x => x.Set<Video>()).Returns(videosToReturn.Object);
+
+            var result = await serviceManager.VideoRating.GetUserVideoRatingAsync(videoRating.VideoId,
+                                                                                  videoRating.UserId,
+                                                                                  trackChanges: true);
+
+            result.Should().BeEquivalentTo(videoRatingDTO);
         }
     }
 }
