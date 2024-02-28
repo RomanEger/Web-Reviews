@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DataTransferObjects;
 using Web_Reviews.Components;
@@ -54,7 +55,10 @@ app.MapPost("/cookie", (TokenDTO token, HttpContext context) =>
 app.MapGet("/token",  (HttpContext context) =>
 {
     var cookie = context.Request.Cookies[CookieKeys.AccessTokenKey] ?? "";
-    return cookie;
+    if (string.IsNullOrWhiteSpace(cookie))
+        return Results.Unauthorized();
+    
+    return Results.Ok(cookie);
 });
 
 

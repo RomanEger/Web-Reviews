@@ -1,9 +1,8 @@
-@using Web_Reviews.Services.Contracts
 @inject IHttpClientFactory ClientFactory 
 @inject ICookieService<TokenDTO, string> CookieService
 @inject NavigationManager Navigation
 @inject IJSRuntime JsRuntime 
-@rendermode RenderMode.InteractiveServer
+@rendermode InteractiveServer
 
 @page "/login"
 

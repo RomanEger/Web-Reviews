@@ -1,6 +1,87 @@
+@using System.Net
+@using System.IdentityModel.Tokens.Jwt
+@inject IHttpClientFactory ClientFactory 
+@inject IJSRuntime JsRuntime 
+@inject NavigationManager NavigationManager
+
+@page "/profile/{userId:guid}"
 @page "/profile"
-<h3>Profile</h3>
+<PageTitle>Profile</PageTitle>
+
+<img src="data:image/png;base64, @photo" alt="Изображение не обнаружено :("/>
+<p>@_userDto?.Email</p>
+<p>@_userDto?.Nickname</p>
+<p>@_userDto?.Password</p>
 
 @code {
+    [Parameter]
+    public Guid userId { get; 
+        init; }
     
+    UserDTO _userDto;
+
+    string photo = "";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine($"Hello {userId}");
+
+        var isUserAuth = await CheckAuth();
+        
+        if(!isUserAuth)
+            NavigationManager.NavigateTo("https://localhost:7224/login");
+        await GetUserById();
+    }
+
+    async Task<bool> CheckAuth()
+    {
+        using var httpClient = ClientFactory.CreateClient();
+        try
+        {
+            var request = await httpClient.GetAsync("https://localhost:7224/token");
+            
+            if (request.StatusCode != HttpStatusCode.OK)
+                return false;
+
+            var content = await request.Content.ReadAsStringAsync();
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(content);
+            
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return false;
+    }
+    
+    async Task GetUserById()
+    {
+        using var httpClient = ClientFactory.CreateClient();
+        try
+        {
+            var request = await httpClient.GetAsync($"https://localhost:7062/api/users/{userId}");
+            
+            var result = await request.Content.ReadAsStringAsync();
+            
+            //костыль
+            var sb = new StringBuilder(result);
+            sb.Replace("userId", nameof(_userDto.UserId));
+            sb.Replace("nickname", nameof(_userDto.Nickname));
+            sb.Replace("email", nameof(_userDto.Email));
+            sb.Replace("password", nameof(_userDto.Password));
+            sb.Replace("userRankId", nameof(_userDto.UserRankId));
+            sb.Replace("photo", nameof(_userDto.Photo));
+            
+            _userDto = JsonSerializer.Deserialize<UserDTO>(sb.ToString()) ?? new UserDTO();
+            if (_userDto.Photo != null)
+                photo = Convert.ToBase64String(_userDto.Photo);
+        }
+        catch (Exception ex)
+        {
+            await JsRuntime.InvokeAsync<string>("alert", ex.Message);
+        }
+    }
 }
