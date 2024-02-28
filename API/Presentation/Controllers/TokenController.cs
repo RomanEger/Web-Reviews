@@ -26,5 +26,12 @@ namespace Presentation.Controllers
             var newTokens = await _serviceManager.Authentication.RefreshToken(tokenDTO);
             return Ok(newTokens);
         }
+
+        [HttpGet("decode")]
+        public async Task<IActionResult> GetUserByAccessToken([FromBody] TokenDTO tokenDTO)
+        {
+            var user = await _serviceManager.Authentication.GetUserByTokenAsync(tokenDTO);
+            return Ok(user);
+        }
     }
 }
