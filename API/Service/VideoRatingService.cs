@@ -26,7 +26,7 @@ namespace Service
             _entityChecker = entityChecker;
         }
 
-        public async Task<VideoDTO> CreateVideoRating(VideoRatingForManipulationDTO ratingForManipulationDTO, bool trackChanges)
+        public async Task<VideoDTO> CreateOrUpdateVideoRating(VideoRatingForManipulationDTO ratingForManipulationDTO, bool trackChanges)
         {
             await _entityChecker.CheckUserAndGetIfItExist(ratingForManipulationDTO.UserId, trackChanges: false);
             await _entityChecker.CheckVideoAndGetIfItExist(ratingForManipulationDTO.VideoId, trackChanges: false);
@@ -57,11 +57,6 @@ namespace Service
             await _repositoryManager.SaveAsync();
             var videoToReturn = _mapper.Map<VideoDTO>(video);
             return videoToReturn;
-        }
-
-        public async Task<VideoDTO> UpdateVideoRating(VideoRatingForManipulationDTO ratingForManipulationDTO, bool trackChanges)
-        {
-            throw new NotImplementedException();
         }
     }
 }

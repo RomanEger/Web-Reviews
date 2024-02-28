@@ -68,7 +68,7 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Video>()).Returns(videosToReturn.Object);
             mockContext.Setup(x => x.Set<Videorating>().Add(It.IsAny<Videorating>())).Callback(() => created = true);
 
-            var result = await serviceManager.VideoRating.CreateVideoRating(videoRatingForManipulation, trackChanges: true);
+            var result = await serviceManager.VideoRating.CreateOrUpdateVideoRating(videoRatingForManipulation, trackChanges: true);
 
             created.Should().BeTrue();
         }
@@ -90,7 +90,7 @@ namespace WebReviews.Tests.Systems.Services
             mockContext.Setup(x => x.Set<Video>()).Returns(videosToReturn.Object);
             mockContext.Setup(x => x.Set<Videorating>().Add(It.IsAny<Videorating>())).Callback(() => created = true);
 
-            var result = await serviceManager.VideoRating.CreateVideoRating(videoRatingForManipulation, trackChanges: true);
+            var result = await serviceManager.VideoRating.CreateOrUpdateVideoRating(videoRatingForManipulation, trackChanges: true);
 
             created.Should().BeFalse();
         }

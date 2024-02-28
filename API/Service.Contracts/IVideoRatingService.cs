@@ -9,8 +9,7 @@ namespace Service.Contracts
 {
     public interface IVideoRatingService
     {
-        Task<VideoDTO> UpdateVideoRating(VideoRatingForManipulationDTO ratingForManipulationDTO, bool trackChanges);
-        Task<VideoDTO> CreateVideoRating(VideoRatingForManipulationDTO ratingForManipulationDTO, bool trackChanges);
+        Task<VideoDTO> CreateOrUpdateVideoRating(VideoRatingForManipulationDTO ratingForManipulationDTO, bool trackChanges);
         Task<VideoDTO> RefreshVideoRating(Guid videoId, bool trackChanges);
     }
 }
