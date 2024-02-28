@@ -14,5 +14,6 @@ namespace Service.Contracts
         IVideoService Video { get; }
         IUserRankService UserRank { get; }
         IUserCommentService UserComment { get; }
+        IVideoRatingService VideoRating { get; }
     }
 }
