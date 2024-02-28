@@ -16,7 +16,7 @@ namespace Repository
         {
         }
 
-        public void CreatedVideoRating(Videorating videoRating) =>
+        public void CreateVideoRating(Videorating videoRating) =>
             Create(videoRating);
 
         public void DeleteVideoRating(Videorating videoRating) =>

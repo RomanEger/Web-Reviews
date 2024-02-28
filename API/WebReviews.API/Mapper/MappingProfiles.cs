@@ -26,6 +26,8 @@ namespace WebReviews.API.Mapper
 
             CreateMap<Usercomment, UserCommentDTO>();
             CreateMap<UserCommentForManipulationDTO, Usercomment>().ReverseMap();
+
+            CreateMap<VideoRatingForManipulationDTO, Videorating>().ReverseMap();
         }
     }
 }

@@ -25,20 +25,20 @@ namespace WebReviews.Tests.Fixtures
                 new()
                 {
                     Rating = 3,
-                    UserId = new Guid("92a913d4-84b2-487d-8ee9-27f5ae0fdef2"),
-                    VideoId = new Guid("6e090bc7-6d8c-4758-acf8-b729473626b6")
+                    UserId = new Guid("6d395f54-d2ab-4f39-aa0e-cce27734b8ec"),
+                    VideoId = new Guid("c65bfef7-f5bd-497c-86c5-1e6aed31202c")
                 },
                 new()
                 {
                     Rating = 8,
-                    UserId = new Guid("c901d089-3693-4cd5-8305-b2386383afbb"),
-                    VideoId = new Guid("0bbcde5b-8e3d-42a5-9860-3d2114ada40e")
+                    UserId = new Guid("08feaf40-ea7f-404d-ade6-b2fb1c009403"),
+                    VideoId = new Guid("a0f3b4a6-1b7c-4376-a215-94839db1c5fb")
                 },
                 new()
                 {
                     Rating = 4,
-                    UserId = new Guid("7abd6ca5-219e-4254-a26a-e718d0d64d98"),
-                    VideoId = new Guid("0bbcde5b-8e3d-42a5-9860-3d2114ada40e")
+                    UserId = new Guid("45278281-eaa7-447a-abb5-4e705ff6b613"),
+                    VideoId = new Guid("a0f3b4a6-1b7c-4376-a215-94839db1c5fb")
                 }
             };
     }

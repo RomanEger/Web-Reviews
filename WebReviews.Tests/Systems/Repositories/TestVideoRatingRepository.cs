@@ -31,7 +31,7 @@ namespace WebReviews.Tests.Systems.Repositories
         {
             var expectedCount = 2;
             var videoRatings = fixture.GetTestData().BuildMock().BuildMockDbSet();
-            var videoId = new Guid("0bbcde5b-8e3d-42a5-9860-3d2114ada40e");
+            var videoId = new Guid("a0f3b4a6-1b7c-4376-a215-94839db1c5fb");
             mockContext.Setup(x => x.Set<Videorating>()).Returns(videoRatings.Object);
 
             var result = await repositoryManager.VideoRating.GetVideoRatingsAsync(videoId, trackChanges: false);
@@ -42,8 +42,8 @@ namespace WebReviews.Tests.Systems.Repositories
         public async void Get_OnSuccess_ReturnedVideoRating_WithUser()
         {
             var videoRatings = fixture.GetTestData().BuildMock().BuildMockDbSet();
-            var videoId = new Guid("0bbcde5b-8e3d-42a5-9860-3d2114ada40e");
-            var userId = new Guid("c901d089-3693-4cd5-8305-b2386383afbb");
+            var videoId = new Guid("a0f3b4a6-1b7c-4376-a215-94839db1c5fb");
+            var userId = new Guid("08feaf40-ea7f-404d-ade6-b2fb1c009403");
             mockContext.Setup(x => x.Set<Videorating>()).Returns(videoRatings.Object);
 
             var result = await repositoryManager.VideoRating.GetVideoRatingAsync(videoId, userId, trackChanges: false);
@@ -57,7 +57,7 @@ namespace WebReviews.Tests.Systems.Repositories
             var videoRating = fixture.GetTestData().First();
             mockContext.Setup(x => x.Set<Videorating>().Add(It.IsAny<Videorating>())).Callback(() => created = true);
 
-            repositoryManager.VideoRating.CreatedVideoRating(videoRating);
+            repositoryManager.VideoRating.CreateVideoRating(videoRating);
             created.Should().BeTrue();
         }
 
