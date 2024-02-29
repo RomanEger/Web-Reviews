@@ -28,9 +28,9 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("decode")]
-        public async Task<IActionResult> GetUserByAccessToken([FromBody] TokenDTO tokenDTO)
+        public async Task<IActionResult> GetUserByAccessToken([FromQuery] string accessToken)
         {
-            var user = await _serviceManager.Authentication.GetUserByTokenAsync(tokenDTO);
+            var user = await _serviceManager.Authentication.GetUserByTokenAsync(accessToken);
             return Ok(user);
         }
     }

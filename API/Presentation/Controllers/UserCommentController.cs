@@ -25,9 +25,10 @@ namespace Presentation.Controllers
         {
             _serviceManager = serviceManager;
         }
- 
+         
         [HttpGet]
-        public async Task<IActionResult> GetUserComments(Guid videoId, UserCommentsParameters commentsParameters)
+        [ResponseCache(CacheProfileName = "5minutesDurationPrivate")]
+        public async Task<IActionResult> GetUserComments(Guid videoId, [FromQuery] UserCommentsParameters commentsParameters)
         {
             var userComments = await _serviceManager.UserComment.GetUserCommentsAsync(videoId, commentsParameters, trackChanges: false);
             Response.Headers.Add("Info-Pagination", JsonSerializer.Serialize(userComments.metaData));
