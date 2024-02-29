@@ -24,6 +24,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(CacheProfileName = "10minutesDurationPublic")]
         public async Task<IActionResult> GetVideos([FromQuery] VideoParameters videoParameters)
         {
             var videos = await _serviceManager.Video.GetVideosAsync(videoParameters, trackChanges: false);
