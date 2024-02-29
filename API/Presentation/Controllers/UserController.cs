@@ -30,6 +30,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("{userId}", Name ="GetUserById")]
+        [ResponseCache(CacheProfileName = "5minutesDurationPrivate")]
         public async Task<IActionResult> GetUser(Guid userId)
         {
             var user = await _serviceManager.User.GetUserByIdAsync(userId, trackChanges: false);
