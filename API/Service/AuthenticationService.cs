@@ -165,9 +165,11 @@ namespace Service
             return await CreateToken(populateExp: false);
         }
 
-        public async Task<UserDTO> GetUserByTokenAsync(TokenDTO tokenDTO)
+        public async Task<UserDTO> GetUserByTokenAsync(string accessToken)
         {
-            var principials = GetClaimsPrincipialFromExpairedToken(tokenDTO.AccessToken);
+            if (string.IsNullOrEmpty(accessToken))
+                throw new BadRequestException("Access токен пустой");
+            var principials = GetClaimsPrincipialFromExpairedToken(accessToken);
             var user = await _repositoryManager.User.GetUserByNicknameAsync(principials.Identity.Name, trackChanges: false);
             if (user is null)
                 throw new NotFoundException($"User с ником: {principials.Identity.Name} не найден");
