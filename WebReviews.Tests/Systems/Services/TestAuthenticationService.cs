@@ -303,7 +303,7 @@ namespace WebReviews.Tests.Systems.Services
 
             tokens.Should().NotBeNull();
 
-            var user = await serviceManager.Authentication.GetUserByTokenAsync(tokens);
+            var user = await serviceManager.Authentication.GetUserByTokenAsync(tokens.AccessToken);
 
             user.Nickname.Should().BeEquivalentTo(userForCreation.UserPersonalData);
         }

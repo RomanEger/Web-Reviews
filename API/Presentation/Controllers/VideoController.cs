@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Presentation.ActionFilters;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 using Shared.RequestFeatures;
@@ -23,7 +24,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetVideos([FromBody] VideoParameters videoParameters)
+        public async Task<IActionResult> GetVideos([FromQuery] VideoParameters videoParameters)
         {
             var videos = await _serviceManager.Video.GetVideosAsync(videoParameters, trackChanges: false);
             Response.Headers.Add("Info-Pagination", JsonSerializer.Serialize(videos.metaData));
@@ -38,6 +39,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateVideo([FromBody] VideoForManipulationDTO videoForManipulation)
         {
             var createdVideo = await _serviceManager.Video.CreateVideoAsync(videoForManipulation);
@@ -52,6 +54,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPut("{videoId}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateVideo([FromBody] VideoForManipulationDTO videoForManipulation, Guid videoId)
         {
             var video = await _serviceManager.Video.UpdateVideoAsync(videoId, videoForManipulation, trackChanges: true);

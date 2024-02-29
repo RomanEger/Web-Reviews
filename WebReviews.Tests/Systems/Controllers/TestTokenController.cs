@@ -91,7 +91,7 @@ namespace WebReviews.Tests.Systems.Controllers
             tokens.Should().NotBeNull();
 
 
-            var result = await tokenController.GetUserByAccessToken(tokens);
+            var result = await tokenController.GetUserByAccessToken(tokens.AccessToken);
             var okResult = result as OkObjectResult;
             var user = okResult.Value as UserDTO;
             user.Nickname.Should().BeEquivalentTo(userForAuth.UserPersonalData);
