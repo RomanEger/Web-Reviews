@@ -2,6 +2,8 @@
 @inject ICookieService<TokenDTO, string> CookieService
 @inject NavigationManager Navigation
 @inject IJSRuntime JsRuntime 
+@inject Connections Connection
+@inject ProtectedLocalStorage Storage
 @rendermode InteractiveServer
 
 @page "/login"
@@ -42,7 +44,7 @@
         var httpClient = ClientFactory.CreateClient();
         try
         {
-            var response = await httpClient.PostAsJsonAsync("https://localhost:7062/api/authentication/login", _userForAuthenticationDto);
+            var response = await httpClient.PostAsJsonAsync($"{Connection.ApiConnection}/api/authentication/login", _userForAuthenticationDto);
 
             var result = await response.Content.ReadAsStringAsync();
 
@@ -53,8 +55,10 @@
 
             var tokenDto = JsonSerializer.Deserialize<TokenDTO>(sbResult.ToString()) ?? new TokenDTO("", "");
 
-            await CookieService.AppendCookieAsync(tokenDto);
-            var accessToken = await CookieService.Get(CookieKeys.AccessTokenKey);
+            await Storage.SetAsync(CookieKeys.AccessTokenKey, tokenDto.AccessToken);
+            
+            //await CookieService.AppendCookieAsync(tokenDto);
+            //var accessToken = await CookieService.Get(CookieKeys.AccessTokenKey);
             Navigation.NavigateTo("/profile");
         }
         catch(Exception ex)

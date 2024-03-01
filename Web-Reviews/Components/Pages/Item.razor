@@ -1,7 +1,7 @@
-@using System.Text.Json
+@inject Connections Connection
 @inject IHttpClientFactory ClientFactory 
 @inject IJSRuntime JsRuntime 
-@rendermode RenderMode.InteractiveServer
+@rendermode InteractiveServer
 
 @page "/item"
 <PageTitle>hello page</PageTitle>
@@ -26,7 +26,7 @@
         var httpClient = ClientFactory.CreateClient();
         try
         {
-            var response = await httpClient.GetAsync("https://localhost:7062/api/videostatuses");
+            var response = await httpClient.GetAsync($"{Connection.ApiConnection}/api/videostatuses");
             var r = await response.Content.ReadAsStringAsync();
             var obj = JsonSerializer.Deserialize<List<VideoStatus>>(r) ?? new List<VideoStatus>();
             item = obj[0].title ?? "null title";
@@ -37,14 +37,8 @@
         }
     }
 
-    async Task Alert()
-    {
+    async Task Alert() =>
         await JsRuntime.InvokeVoidAsync("alert", $"You clicked {++counter} times");
-    }
+    
 
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if(!firstRender) return;
-    //         await JsRuntime.InvokeVoidAsync("alert", "hello!");
-    // } 
 }

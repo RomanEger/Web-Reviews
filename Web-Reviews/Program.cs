@@ -1,9 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Shared.DataTransferObjects;
 using Web_Reviews.Components;
 using Web_Reviews.Services;
@@ -11,17 +6,19 @@ using Web_Reviews.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => options.LoginPath = "/login");
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
-
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<ICookieService<TokenDTO, string>, CookieService>();
+
+builder.Services.AddSingleton<Connections>();
 
 var app = builder.Build();
 
@@ -45,16 +42,18 @@ app.UseAuthorization();
 
 app.MapPost("/cookie", (TokenDTO token, HttpContext context) =>
 {
-    var option = new CookieOptions()
+    
+    context.Response.Cookies.Append(CookieKeys.AccessTokenKey, token.AccessToken, new CookieOptions()
     {
-        Expires = DateTime.Now.AddMinutes(30)
-    };
-    context.Response.Cookies.Append(CookieKeys.AccessTokenKey, token.AccessToken, option);
+        Expires = DateTimeOffset.Now.AddMinutes(30)
+    });
 });
+
 
 app.MapGet("/token",  (HttpContext context) =>
 {
-    var cookie = context.Request.Cookies[CookieKeys.AccessTokenKey] ?? "";
+    //var cookie = context.Request.Cookies[CookieKeys.AccessTokenKey] ?? "";
+    context.Request.Cookies.TryGetValue(CookieKeys.AccessTokenKey, out string? cookie);
     if (string.IsNullOrWhiteSpace(cookie))
         return Results.Unauthorized();
     

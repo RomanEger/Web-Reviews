@@ -1,53 +1,70 @@
 @using System.Net
-@using System.IdentityModel.Tokens.Jwt
+@using Microsoft.IdentityModel.Tokens
 @inject IHttpClientFactory ClientFactory 
 @inject IJSRuntime JsRuntime 
 @inject NavigationManager NavigationManager
+@inject Connections Connection
+@inject ProtectedLocalStorage Storage
+@rendermode InteractiveServer
 
 @page "/profile"
 <PageTitle>Profile</PageTitle>
 
-<img src="data:image/png;base64, @photo" alt="Изображение не обнаружено :("/>
-<p>@_userDto?.Email</p>
-<p>@_userDto?.Nickname</p>
+
+<img src="data:image/png;base64, @_photo" alt=""/>
+<p bind="@_userDto?.Email"/>
+<p bind="@_userDto?.Nickname"/>
+    
+
 
 @code {
     
-    
     UserDTO _userDto;
 
-    string photo = "";
+    string _photo = "";
     
     string accessToken { get; set; }
-    
-    protected override async Task OnInitializedAsync()
-    {
-        var isUserAuth = await CheckAuth();
 
-        if (!isUserAuth)
+    bool _isUserAuth;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     _isUserAuth = await CheckAuth();
+    //
+    //     if (!_isUserAuth)
+    //     {
+    //         return;
+    //     }
+    //     
+    //     await GetUserByToken();
+    // }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(!firstRender)return;
+        _isUserAuth = await CheckAuth();
+
+        if (!_isUserAuth)
+        {
+            await JsRuntime.InvokeAsync<string>("alert", "Вы не авторизованы!");
+            NavigationManager.NavigateTo("/login");
             return;
+        }
         
         await GetUserByToken();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await JsRuntime.InvokeAsync<string>("alert", "Вы не авторизованы!");
-        NavigationManager.NavigateTo("https://localhost:7224/login");
-    }
-    
     async Task<bool> CheckAuth()
     {
         using var httpClient = ClientFactory.CreateClient();
         try
         {
-            var request = await httpClient.GetAsync("https://localhost:7224/token");
+            var request = await httpClient.GetAsync($"{Connection.selfConnection}/token");
+            var storageResult = await Storage.GetAsync<string>(CookieKeys.AccessTokenKey);
             
-            if (request.StatusCode != HttpStatusCode.OK)
+            if (storageResult.Value.IsNullOrEmpty())
                 return false;
-
-            var content = await request.Content.ReadAsStringAsync();
-            accessToken = JsonSerializer.Deserialize<string>(content) ?? "";
+            accessToken = storageResult.Value;
             
             return true;
         }
@@ -63,8 +80,7 @@
     {
         using var httpClient = ClientFactory.CreateClient();
 
-        var tokenDTO = new TokenDTO(accessToken, "");
-        var requestUser = await httpClient.PostAsJsonAsync("https://localhost:7062/api/authentication",tokenDTO);
+        var requestUser = await httpClient.GetAsync($"{Connection.ApiConnection}/api/tokens/decode?accessToken={accessToken}");
         var content = await requestUser.Content.ReadAsStringAsync();
         
         //костыль
@@ -77,7 +93,8 @@
         
         _userDto = JsonSerializer.Deserialize<UserDTO>(sb.ToString()) ?? new UserDTO();
         if (_userDto.Photo != null)
-            photo = Convert.ToBase64String(_userDto.Photo);
+            _photo = Convert.ToBase64String(_userDto.Photo);
+        var requestRank = await httpClient.GetAsync($"{Connection.ApiConnection}/api/userranks/{_userDto.UserRankId}");
     }
    
 }

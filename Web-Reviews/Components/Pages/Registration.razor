@@ -5,6 +5,7 @@
 @inject IJSRuntime JsRuntime 
 @inject IHttpClientFactory ClientFactory 
 @inject NavigationManager Navigation
+@inject Connections Connection
 @rendermode RenderMode.InteractiveServer
 
 @page "/registration"
@@ -76,8 +77,6 @@
     
     string SecondPassword {get; set;}
 
-    string _accessToken;
-
     static string errorNickName;
     static string errorEmail;
     
@@ -96,7 +95,7 @@
         {
             const string defaultRank = "дефолт";
             
-            var responseRanks = await httpClient.GetAsync("https://localhost:7062/api/userranks");
+            var responseRanks = await httpClient.GetAsync($"{Connection.ApiConnection}/api/userranks");
             var r = await responseRanks.Content.ReadAsStringAsync();
             
             //костыль
@@ -108,7 +107,7 @@
             
             _userForRegistrationDto.UserRankId = userRanks.Where(x => x.Title == defaultRank).Select(x => x.UserRankId).FirstOrDefault();
             
-            var response = await httpClient.PostAsJsonAsync("https://localhost:7062/api/authentication/registration", _userForRegistrationDto);
+            var response = await httpClient.PostAsJsonAsync($"{Connection.ApiConnection}/api/authentication/registration", _userForRegistrationDto);
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
@@ -119,7 +118,7 @@
                     UserPersonalData = _userForRegistrationDto.Nickname,
                     Password = _userForRegistrationDto.Password
                 };
-                var responseForAuth = await httpClient.PostAsJsonAsync("https://localhost:7062/api/authentication/login", userForAuth);
+                var responseForAuth = await httpClient.PostAsJsonAsync($"{Connection.ApiConnection}/api/authentication/login", userForAuth);
 
                 var result = await responseForAuth.Content.ReadAsStringAsync();
                 
@@ -131,8 +130,8 @@
                 _tokenDto = JsonSerializer.Deserialize<TokenDTO>(sbResult.ToString()) ?? new TokenDTO("", "");
                 
                 await CookieService.AppendCookieAsync(_tokenDto);
-                _accessToken = await CookieService.Get(CookieKeys.AccessTokenKey);
-                Navigation.NavigateTo("profile");
+                
+                Navigation.NavigateTo("/profile");
             }
             else
             {
