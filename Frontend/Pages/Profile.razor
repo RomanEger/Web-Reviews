@@ -1,0 +1,31 @@
+@inject HttpClient HttpClient;
+
+@page "/profile"
+<PageTitle>Профиль</PageTitle>
+<h3>Profile</h3>
+
+@if (!_isAuth)
+{
+    <p>Вы не авторизованы!</p>
+    <NavLink href="/login">
+        <button type="submit" class="btn btn-outline-primary d-block w-100">Войти</button>
+    </NavLink>
+}
+else
+{
+    <p>friend</p>
+}
+
+@code {
+
+    void SetAuth() => _isAuth = !_isAuth;
+    
+    bool _isAuth = false;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        // var responseMessage = await HttpClient.GetAsync("");
+        // var token = await responseMessage.Content.ReadAsStringAsync();
+        
+    }
+}
