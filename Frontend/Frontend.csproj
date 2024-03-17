@@ -12,4 +12,19 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Components\Layout\HeaderMenu.razor" />
+      <AdditionalFiles Include="Components\Layout\MainLayout.razor" />
+      <AdditionalFiles Include="Components\Pages\Counter.razor" />
+      <AdditionalFiles Include="Components\Pages\Home.razor" />
+      <AdditionalFiles Include="Components\Pages\Profile.razor" />
+      <AdditionalFiles Include="Components\Pages\Weather.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Layout\HeaderMenu.razor" />
+      <_ContentIncludedByDefault Remove="Layout\MainLayout.razor" />
+      <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
+    </ItemGroup>
+
 </Project>
