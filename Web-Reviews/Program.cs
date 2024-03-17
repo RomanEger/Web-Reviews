@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Shared.DataTransferObjects;
 using Web_Reviews.Components;
@@ -11,6 +12,10 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => options.LoginPath = "/login");
+
+builder.Services.AddScoped<Cookie, Cookie>();
+
+builder.Services.AddScoped<CookieContainer, CookieContainer>();
 
 builder.Services.AddAuthorization();
 
@@ -45,7 +50,9 @@ app.MapPost("/cookie", (TokenDTO token, HttpContext context) =>
     
     context.Response.Cookies.Append(CookieKeys.AccessTokenKey, token.AccessToken, new CookieOptions()
     {
-        Expires = DateTimeOffset.Now.AddMinutes(30)
+        Expires = DateTimeOffset.Now.AddMinutes(30),
+        HttpOnly = true,
+        SameSite = SameSiteMode.Lax
     });
 });
 

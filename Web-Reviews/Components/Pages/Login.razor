@@ -57,7 +57,7 @@
 
             await Storage.SetAsync(CookieKeys.AccessTokenKey, tokenDto.AccessToken);
             
-            //await CookieService.AppendCookieAsync(tokenDto);
+            await CookieService.AppendCookieAsync(tokenDto);
             //var accessToken = await CookieService.Get(CookieKeys.AccessTokenKey);
             Navigation.NavigateTo("/profile");
         }
