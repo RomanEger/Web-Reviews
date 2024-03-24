@@ -11,22 +11,11 @@
       </form>
         
       <div class="text-end">
-        @if (!_isAuth)
-        {
-          <NavLink href="/login">
-            <button type="button" class="btn btn-outline-light me-2">Войти</button>
-          </NavLink>
-          <NavLink href="/registration">
-            <button type="button" class="btn btn-warning">Зарегистрироваться</button>
-          </NavLink>
+        
+        <NavLink href="/login">
+          <button type="button" class="btn btn-outline-light me-2">Логин</button>
+        </NavLink>
           
-        }
-        else
-        {
-          <NavLink href="/profile">
-            <button type="button" class="btn btn-outline-light me-2">Профиль</button>
-          </NavLink>
-        }
       </div>
     </div>
   </div>
@@ -38,12 +27,3 @@
     <li><NavLink href="#" class="nav-link px-2 text-black">Новинки</NavLink></li>
   </ul>
 </div>
-
-@code
-{
-    [Parameter]
-    public bool _isAuth { 
-      get;
-      set; 
-    }
-}

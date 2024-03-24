@@ -38,6 +38,16 @@
 </div>
 @code {
 
+    protected override async Task OnParametersSetAsync()
+    {
+        var cookies = await CookieService.GetCookie();
+        var accessToken = cookies?.FirstOrDefault(x => x.StartsWith("AccessToken")) ?? string.Empty;
+        var refreshToken = cookies?.FirstOrDefault(x => x.StartsWith(" RefreshToken")) ?? string.Empty;
+        if(string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(refreshToken))
+            return;
+        Navigation.NavigateTo("/profile");
+    }
+
     readonly UserForAuthenticationDTO _userForAuthenticationDto = new();
 
     async Task LoginFunc()
