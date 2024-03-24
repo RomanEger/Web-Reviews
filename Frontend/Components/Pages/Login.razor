@@ -1,0 +1,70 @@
+@using System.Text.Json
+@using Frontend.Services
+@using global::Shared.DataTransferObjects
+@inject IHttpClientFactory ClientFactory 
+@inject NavigationManager Navigation
+@inject IJSRuntime JsRuntime 
+@inject Connections Connection
+@inject ICookieService CookieService
+
+@page "/login"
+
+<PageTitle>Login</PageTitle>
+
+<div class="card-body d-flex flex-column align-items-center">
+    
+    <EditForm class="text-center" Model="@_userForAuthenticationDto" OnSubmit="@LoginFunc" FormName="loginForm">
+
+        <DataAnnotationsValidator/>
+        <div class="mb-3">
+            <label>Логин</label>
+            <InputText type="text" class="form-control" @bind-Value="_userForAuthenticationDto.UserPersonalData" placeholder="Логин"/>
+            <ValidationMessage For="@(() => _userForAuthenticationDto.UserPersonalData)"/>
+        </div>
+
+        <div class="mb-4">
+            <label>Пароль</label>
+            <InputText type="password" class="form-control" @bind-Value="_userForAuthenticationDto.Password" placeholder="Пароль"/>
+            <ValidationMessage For="@(() => _userForAuthenticationDto.Password)"/>
+        </div>
+        
+        <div class="mb-3">
+            <button type="submit" class="btn btn-outline-primary d-block w-100">Войти</button>
+        </div>
+        
+    </EditForm>
+    <p><NavLink href="#" class="nav-link px-0 text-primary">Забыли пароль?</NavLink></p>
+    <p><NavLink href="/registration" class="nav-link px-0 text-primary">Создать аккаунт</NavLink></p>
+</div>
+@code {
+
+    readonly UserForAuthenticationDTO _userForAuthenticationDto = new();
+
+    async Task LoginFunc()
+    {
+        var httpClient = ClientFactory.CreateClient();
+        try
+        {
+            var response = await httpClient.PostAsJsonAsync($"{Connection.ApiConnection}/api/authentication/login", _userForAuthenticationDto);
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            var tokenDto = JsonSerializer.Deserialize<TokenDTO>(result, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            }) ?? new TokenDTO("", "");
+
+            await CookieService.AddCookie("AccessToken", tokenDto.AccessToken);
+            await CookieService.AddCookie("RefreshToken", tokenDto.RefreshToken);
+            if(!string.IsNullOrWhiteSpace(tokenDto.AccessToken))
+                Navigation.NavigateTo("/profile");
+            else
+                await JsRuntime.InvokeAsync<string>("alert", "Не удалось войти");
+            
+        }
+        catch(Exception ex)
+        {
+            await JsRuntime.InvokeAsync<string>("alert", ex.Message);
+        }
+    }
+}

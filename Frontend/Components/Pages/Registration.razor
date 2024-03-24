@@ -1,0 +1,158 @@
+@using System.Net
+@using System.Text
+@using System.Text.Json
+@using Entities.Models
+@using Frontend.Services
+@using global::Shared.DataTransferObjects
+@inject IJSRuntime JsRuntime 
+@inject IHttpClientFactory ClientFactory 
+@inject NavigationManager Navigation
+@inject Connections Connection
+
+@page "/registration"
+<PageTitle>Registration</PageTitle>
+
+<div class="card-body d-flex flex-column align-items-center">
+    
+    <EditForm class="text-center" Model="@_userForRegistrationDto" OnSubmit="@Register" FormName="registrationForm">
+        
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <label>Имя пользователя<b style="color: red">*</b></label>
+            <InputText type="text" class="form-control" @bind-Value="_userForRegistrationDto.Nickname" style="@StyleNickName" placeholder="Никнейм"/>
+            <ValidationMessage For="@(() => _userForRegistrationDto.Nickname)"/>
+            <div style="color: red">
+                @errorNickName
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label>Почта<b style="color: red">*</b></label>
+            <InputText type="text" class="form-control" @bind-Value="_userForRegistrationDto.Email" style="@StyleEmail" placeholder="Email"/>
+            <ValidationMessage For="@(() => _userForRegistrationDto.Email)"/>
+            <div style="color: red">
+                @errorEmail
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label>Пароль<b style="color: red">*</b></label>
+            <InputText type="password" class="form-control" @bind-Value="_userForRegistrationDto.Password" style="@StylePassword" placeholder="Пароль"/>
+                <ValidationMessage For="@(() => _userForRegistrationDto.Password)"/>
+        </div>
+
+        <div class="mb-3">
+            <label>Подтвердите пароль<b style="color: red">*</b></label>
+            <input type="password" class="form-control" @bind-value="SecondPassword" style="@StylePassword" placeholder="Подтвердите пароль"/>
+        </div>
+
+        <div class="mb-3">
+            <label><b style="color: red">*</b> - обязательные для заполнения поля</label>
+        </div>
+        
+        <div class="mb-3">
+            <button type="submit" class="btn btn-outline-primary d-block w-100">Создать аккаунт</button>
+        </div>
+        
+    </EditForm>
+</div>
+
+@code {
+
+    [Parameter] 
+    public static string StylePassword { get; set; }
+
+    [Parameter]
+    public static string StyleNickName { get; set; }
+    
+    [Parameter]
+    public static string StyleEmail { get; set; }
+    
+    TokenDTO _tokenDto;
+    
+    const string ErrorStyle = "border-color: red";
+    
+    const string DefaultStyle = "";
+    
+    UserForRegistrationDTO _userForRegistrationDto = new();
+    
+    string SecondPassword {get; set;}
+
+    static string errorNickName;
+    static string errorEmail;
+    
+    async Task Register()
+    {
+        if (_userForRegistrationDto.Password != SecondPassword)
+        {
+            StylePassword = ErrorStyle;
+            return;
+        }
+        
+        StylePassword = DefaultStyle;
+        
+        var httpClient = ClientFactory.CreateClient();
+        try
+        {
+            const string defaultRank = "дефолт";
+            
+            var responseRanks = await httpClient.GetAsync($"{Connection.ApiConnection}/api/userranks");
+            var resultRank = await responseRanks.Content.ReadAsStringAsync();
+            
+            var userRanks = JsonSerializer.Deserialize<List<Userrank>>(resultRank, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            }) ?? new List<Userrank>();
+            
+            _userForRegistrationDto.UserRankId = userRanks.Where(x => x.Title == defaultRank).Select(x => x.UserRankId).FirstOrDefault();
+            
+            var response = await httpClient.PostAsJsonAsync($"{Connection.ApiConnection}/api/authentication/registration", _userForRegistrationDto);
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                errorEmail = "";
+                errorNickName = "";
+                var userForAuth = new UserForAuthenticationDTO()
+                {
+                    UserPersonalData = _userForRegistrationDto.Nickname,
+                    Password = _userForRegistrationDto.Password
+                };
+                var responseForAuth = await httpClient.PostAsJsonAsync($"{Connection.ApiConnection}/api/authentication/login", userForAuth);
+
+                var resultAuth = await responseForAuth.Content.ReadAsStringAsync();
+                
+                
+                _tokenDto = JsonSerializer.Deserialize<TokenDTO>(resultAuth, new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? new TokenDTO("", "");
+                
+                //await CookieService.AppendCookieAsync(_tokenDto);
+                
+                Navigation.NavigateTo("/profile");
+            }
+            else
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                var errorRegistration = JsonSerializer.Deserialize<ErrorRegistration>(errorMessage) ?? new ErrorRegistration( "");
+                if (errorRegistration.message.Contains("email"))
+                {
+                    errorEmail = errorRegistration.message;
+                    errorNickName = "";
+                }
+                else
+                {
+                    errorNickName = errorRegistration.message;
+                    errorEmail = "";
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            await JsRuntime.InvokeAsync<string>("alert", ex.Message);
+        }
+    }
+
+    record ErrorRegistration(string message);
+
+}

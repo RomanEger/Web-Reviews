@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Shared.DataTransferObjects;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,5 +28,15 @@ if (builder.Environment.IsDevelopment())
 app.UseCors("wasm");
 
 app.UseHttpsRedirection();
+
+app.MapPost("/cookie", (TokenDTO token, HttpContext context) =>
+{
+    if(context.Request.Cookies.TryGetValue("AccessToken", out string? aToken))
+        context.Response.Cookies.Delete("AccessToken");
+    
+    context.Response.Cookies.Append("AccessToken", token.AccessToken);
+});
+
+app.MapGet("/cookie", (HttpContext context) => context.Request.Cookies["AccessToken"] ?? string.Empty);
 
 app.Run();

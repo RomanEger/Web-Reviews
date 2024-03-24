@@ -1,6 +1,12 @@
-@inject HttpClient HttpClient;
-
+@inject ICookieService CookieService
+@inject HttpClient HttpClient
+@inject Connections Connection
 @page "/profile"
+@using Frontend.Services
+@using System.Text.Json
+@using System.Net
+@using global::Shared.DataTransferObjects
+
 <PageTitle>Профиль</PageTitle>
 <h3>Profile</h3>
 
@@ -13,19 +19,136 @@
 }
 else
 {
-    <p>friend</p>
+    <div class="card-body d-flex flex-column align-items-center">
+        <img src="data:image/png;base64,@_base64Img" alt="Фото не найдено :(" class="m-3"/>
+        <p class="m-2">@_user.Nickname</p>
+        
+        <table>
+            <caption>Ваши отзывы</caption>
+            <thead>
+                <tr>
+                    <th>Фото</th>
+                    <th>Название</th>
+                    <th>Ваш рейтинг</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _listRatings)
+                {
+                    <tr>
+                        <td><img src="data:image/png;base64,@item.PhotoBase64" alt=""/></td>
+                        <td>@item.Title</td>
+                        <td>@item.Rating</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 @code {
 
-    void SetAuth() => _isAuth = !_isAuth;
+    IEnumerable<VideoRatingViewModel> _listRatings;
     
-    bool _isAuth = false;
+    UserDTO _user;
+
+    string _base64Img = string.Empty;    
+
+    [Parameter]
+    public bool _isAuth { 
+        get;
+        set; }
     
-    protected override async Task OnInitializedAsync()
+    [Parameter]
+    public EventCallback<string> SearchChanged { get; set; }
+    
+    protected override async Task OnParametersSetAsync()
     {
-        // var responseMessage = await HttpClient.GetAsync("");
-        // var token = await responseMessage.Content.ReadAsStringAsync();
+        _isAuth = await CheckAuth();
+        await SearchChanged.InvokeAsync();
+        if (_isAuth)
+            _base64Img = Convert.ToBase64String(_user.Photo ?? new byte[]{});
+        _listRatings = await GetRatings();
+    }
+    
+    async Task<bool> CheckAuth()
+    {
+        var cookies = await CookieService.GetCookie();
+        if (cookies != null && cookies.Any())
+        {
+            var cookiesList = cookies.ToList();
+            
+            var accessToken = cookiesList.FirstOrDefault(x => x.StartsWith("AccessToken")) ?? string.Empty;
+            var refreshToken = cookiesList.FirstOrDefault(x => x.StartsWith(" RefreshToken")) ?? string.Empty;
+
+            if(accessToken == string.Empty || refreshToken == string.Empty)
+                return false;
+            
+            var accessTokenSplit = accessToken.Split('=');
+         
+            var tokenDto = new TokenDTO(accessTokenSplit.Last(), refreshToken.Split("=").Last());
+
+
+            if (await CheckByToken(accessTokenSplit.Last())) return true;
+            
+            await UpdateTokens(tokenDto);
+            
+            return await CheckByToken(accessTokenSplit.Last());
+        }
+
+        return false;
+
+        async Task<bool> CheckByToken(string token)
+        {
+            _user = await DecodeToken(token);
+
+            if (!string.IsNullOrWhiteSpace(_user.Nickname))
+                return true;
+            
+            return false;
+        }
         
     }
+
+    //не нашел подходящий метод у апи
+    async Task<IEnumerable<VideoRatingViewModel>> GetRatings()
+    {
+        return new[]
+        {
+            new VideoRatingViewModel("test 1", "", 5),
+            new VideoRatingViewModel("title 2", "", 3)
+        };
+    }
+    
+    async Task<UserDTO> DecodeToken(string token)
+    {
+        var httpResponseMessage = await HttpClient.GetAsync($"{Connection.ApiConnection}/api/tokens/decode?accessToken={token}");
+        if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
+            return new UserDTO();
+        return JsonSerializer.Deserialize<UserDTO>(await httpResponseMessage.Content.ReadAsStringAsync(), new JsonSerializerOptions()
+        {
+            PropertyNameCaseInsensitive = true
+        }) ?? new UserDTO();
+    }
+
+    async Task UpdateTokens(TokenDTO tokenDto)
+    {
+        var httpResponseMessage = await HttpClient.PostAsJsonAsync($"{Connection.ApiConnection}/api/tokens/refresh", tokenDto);
+        
+        if(httpResponseMessage.StatusCode != HttpStatusCode.OK)
+            return;
+        
+        tokenDto = JsonSerializer.Deserialize<TokenDTO>(await httpResponseMessage.Content.ReadAsStringAsync(), new JsonSerializerOptions()
+        {
+            PropertyNameCaseInsensitive = true
+        }) ?? throw new InvalidOperationException();
+        
+        await CookieService.AddCookie("AccessToken", tokenDto.AccessToken);
+        
+        await CookieService.AddCookie("RefreshToken", tokenDto.RefreshToken);
+        
+    }
+
+    record VideoRatingViewModel(string Title, string PhotoBase64, int Rating);
+
 }
