@@ -7,11 +7,10 @@
 @using System.Net
 @using global::Shared.DataTransferObjects
 
-<PageTitle>Профиль</PageTitle>
-<h3>Profile</h3>
 
 @if (!_isAuth)
 {
+    <PageTitle>Профиль</PageTitle>
     <p>Вы не авторизованы!</p>
     <NavLink href="/login">
         <button type="submit" class="btn btn-outline-primary d-block w-100">Войти</button>
@@ -19,6 +18,7 @@
 }
 else
 {
+    <PageTitle>@_user.Nickname</PageTitle>
     <div class="card-body d-flex flex-column align-items-center">
         <img src="data:image/png;base64,@_base64Img" alt="Фото не найдено :(" class="m-3"/>
         <p class="m-2">@_user.Nickname</p>
@@ -54,18 +54,15 @@ else
 
     string _base64Img = string.Empty;    
 
-    [Parameter]
-    public bool _isAuth { 
+    bool _isAuth 
+    { 
         get;
-        set; }
-    
-    [Parameter]
-    public EventCallback<string> SearchChanged { get; set; }
+        set; 
+    }
     
     protected override async Task OnParametersSetAsync()
     {
         _isAuth = await CheckAuth();
-        await SearchChanged.InvokeAsync();
         if (_isAuth)
             _base64Img = Convert.ToBase64String(_user.Photo ?? new byte[]{});
         _listRatings = await GetRatings();

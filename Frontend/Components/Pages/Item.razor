@@ -1,0 +1,24 @@
+﻿@inject ICookieService CookieService
+@inject HttpClient HttpClient
+@inject Connections Connection
+
+@page "/media/{id}"
+@using Frontend.Services
+@using Shared.DataTransferObjects
+
+<img src="data:image/png;base64," style="float: left" alt="error"/>
+<div>
+    
+</div>
+@code {
+    
+    VideoDTO _videoDto;
+
+    Guid id;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await HttpClient.GetAsync("");
+    }
+
+}
