@@ -46,5 +46,12 @@ namespace Presentation.Controllers
             var videoRating = await _serviceManager.VideoRating.GetUserVideoRatingAsync(videoId, userId, trackChanges: false);
             return Ok(videoRating);
         }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserRatings(Guid userId)
+        {
+            var videoRatings = await _serviceManager.VideoRating.GetUserRatingsAsync(userId, false);
+            return Ok(videoRatings);
+        }
     }
 }

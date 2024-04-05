@@ -29,5 +29,9 @@ namespace Repository
         public async Task<IEnumerable<Videorating>> GetVideoRatingsAsync(Guid videoId, bool trackChanges) =>
             await FindByConditions(x => x.VideoId == videoId, trackChanges)
             .ToListAsync();
+
+        public async Task<IEnumerable<Videorating>> GetUserRatingsAsync(Guid userId, bool trackChanges) =>
+            await FindByConditions(x => x.UserId == userId, trackChanges)
+                .ToListAsync();
     }
 }

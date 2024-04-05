@@ -111,6 +111,24 @@ namespace WebReviews.Tests.Systems.Services
         }
 
         [Fact]
+        public async Task Get_OnSuccess_VideoRatingsDTO()
+        {
+            var videoRating = videoRatingFixture.GetTestData().First();
+            var videoRatingsToReturn = videoRatingFixture.GetTestData().BuildMock().BuildMockDbSet();
+            var usersToReturn = userFixture.GetTestData().BuildMock().BuildMockDbSet();
+            var videosToReturn = videoFixture.GetTestData().BuildMock().BuildMockDbSet();
+            var videoRatingDTO = autoMapper.Map<VideoRatingDTO>(videoRating);
+
+            mockContext.Setup(x => x.Set<Videorating>()).Returns(videoRatingsToReturn.Object);
+            mockContext.Setup(x => x.Set<User>()).Returns(usersToReturn.Object);
+            mockContext.Setup(x => x.Set<Video>()).Returns(videosToReturn.Object);
+
+            var result = await serviceManager.VideoRating.GetUserRatingsAsync(videoRating.UserId,
+                                                                                  trackChanges: true);
+
+            result.First().Should().BeEquivalentTo(videoRatingDTO);
+        }
+        [Fact]
         public async Task Get_OnSuccess_VideoRatingDTO()
         {
             var videoRating = videoRatingFixture.GetTestData().First();

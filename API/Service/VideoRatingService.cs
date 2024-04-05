@@ -70,5 +70,13 @@ namespace Service
             var videoToReturn = _mapper.Map<VideoDTO>(video);
             return videoToReturn;
         }
+
+        public async Task<IEnumerable<VideoRatingDTO>> GetUserRatingsAsync(Guid userId, bool trackChanges)
+        {
+            var user = await _entityChecker.CheckUserAndGetIfItExist(userId, trackChanges);
+            var ratings = await _repositoryManager.VideoRating.GetUserRatingsAsync(user.UserId, false);
+            var ratingsToReturn = _mapper.Map<IEnumerable<VideoRatingDTO>>(ratings);
+            return ratingsToReturn;
+        }
     }
 }

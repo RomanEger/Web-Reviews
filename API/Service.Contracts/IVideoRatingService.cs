@@ -12,5 +12,6 @@ namespace Service.Contracts
         Task<VideoDTO> CreateOrUpdateVideoRatingAsync(VideoRatingForManipulationDTO ratingForManipulationDTO, bool trackChanges);
         Task<VideoDTO> RefreshVideoRatingAsync(Guid videoId, bool trackChanges);
         Task<VideoRatingDTO> GetUserVideoRatingAsync(Guid videoId, Guid userId, bool trackChanges);
+        Task<IEnumerable<VideoRatingDTO>> GetUserRatingsAsync(Guid userId, bool trackChanges);
     }
 }
