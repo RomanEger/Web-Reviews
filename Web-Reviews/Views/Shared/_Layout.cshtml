@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+
+<html lang="ru" class="h-100">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Frontend</title>
+    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/app.css"/>
+    <link rel="icon" type="image/png" href="favicon.png"/>
+</head>
+<body class="d-flex flex-column h-100">
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start w-100">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <p>
+                    <img src="favicon.png" alt=""/>
+                </p>
+            </a>
+
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+            </form>
+
+            @if (Context.User.Identity.IsAuthenticated)
+            {
+                <form asp-action="Profile" asp-controller="Auth" class="text-end">
+                    <button type="submit" class="btn btn-outline-light me-2">Профиль</button>
+                </form>
+            }
+            else
+            {
+                <button onclick="location.href='/login';" type="submit" class="btn btn-outline-light me-2">Логин</button>
+            }
+        </div>
+    </div>
+</header>
+<div class="container">
+    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li>
+            <a href="/home" class="nav-link px-2 text-black">Популярное</a>
+        </li>
+        <li>
+            <a href="/item" class="nav-link px-2 text-black">Категории</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link px-2 text-black">Новинки</a>
+        </li>
+    </ul>
+</div>
+<div class="page">
+
+    <main class="mx-4 text-wrap border">
+
+        <article class="content px-4 text-center">
+            @RenderBody()
+        </article>
+    </main>
+</div>
+
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+        <p>some text</p>
+    </div>
+</footer>
+
+</body>
+</html>
