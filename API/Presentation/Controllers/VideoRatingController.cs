@@ -47,7 +47,7 @@ namespace Presentation.Controllers
             return Ok(videoRating);
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("userId={userId}")]
         public async Task<IActionResult> GetUserRatings(Guid userId)
         {
             var videoRatings = await _serviceManager.VideoRating.GetUserRatingsAsync(userId, false);
